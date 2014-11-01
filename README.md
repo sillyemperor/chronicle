@@ -3,7 +3,12 @@ chronicle
 
 历史事件浏览，数据来自维基百科。使用了TimelineJS控件和Python。
 
-在Python下启动只需要在chronicle目录下执行python -m SimpleHTTPServer <端口如8080>即可。
+安装和启动
+Windows
+   安装Python，在这里https://www.python.org/downloads/windows/下载安装。
+   打开命令窗口，进入chronicle目录，输入 python -m SimpleHTTPServer 8899 回车。
+   打开浏览器，在地址栏中输入：http://localhost:8899  回车。
+
 
 
 
