@@ -202,7 +202,7 @@ def buildTimelineJSJson(srcdir,destdir):
 
 if __name__=='__main__':
 	wiki_download_dir='./wiki_files'
-	#从维基下载数据
+	#从维基下载数据！！！！本函数需要单独执行
 	#downloadFromWiki(-1000,2013,wiki_download_dir)
 	#有些年份被导引到特定年代，需要处理
 	#processRedirection(wiki_download_dir)
