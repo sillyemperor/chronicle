@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <style>
+      html, body {
+       height:100%;
+       padding: 0px;
+       margin: 0px;
+      }
+    </style>
+        <!-- jQuery -->
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <!-- BEGIN TimelineJS -->
+        <script type="text/javascript" src="./timelinejs/js/storyjs-embed.js"></script>
+        <script>
+            $(document).ready(function() {
+		$.ajax({
+		  dataType: "json",
+		  url: './cache/info.json',
+		  success: function(data, textStatus, jqXHR){
+		    for(var i in data){
+		      if (i%20==0)
+		       $('#timezone-bar').append('<div id="'+data[i].id+'" style="display: table-cell;border: 1px solid black; \
+		       text-align: center;vertical-align: middle;cursor: pointer ;" onclick="timezone('+data[i].id+')" >'+data[i].title+'</div>');
+		      else
+		        $('#timezone-bar').append('<div  id="'+data[i].id+'" style="display: table-cell;border: 1px solid black; \
+			text-align: center;vertical-align: middle;width:5px;height:5px;cursor: pointer ;" onclick="timezone('+data[i].id+')" title="'+data[i].title+'"/>');
+		    }
+		  }
+		});	        
+            });
+	    function timezone(id){
+                 $( "#timezone-bar" ).children().css( "background-color", "white" );	    
+		   $( "#"+id ).css( "background-color", "gray" );	    
+		   $('#my-timeline').empty()
+                createStoryJS({
+			lang:'zh-cn',
+                    type:       'timeline',
+                    width:      '100%',
+                    height:     '100%',
+                    source:     './cache/'+id+".json",
+                    embed_id:   'my-timeline'
+                });	    
+	    }
+        </script>
+        <!-- END TimelineJS -->
+    </head>
+    <body>
+        <div id="timezone-bar" style="display: table;overflow-x:scroll ; overflow-y: hidden;"></div>
+        <div id="my-timeline"></div>
+    </body>
+</html> 
