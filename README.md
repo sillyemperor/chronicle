@@ -14,5 +14,11 @@ Windows
   打开浏览器，在地址栏中输入：http://localhost:8899  回车。
 
 
+想自己生成缓存
+  下载code/http.py,code/cache.py
+  按照cache.py中的说明运行即可。
+  注意：维基百科的网站可能做了控制，一次不可能下载完成，多试几次就好。
 
+
+Have fun!
 
