@@ -211,10 +211,7 @@ if __name__=='__main__':
 	#partXml(wiki_download_dir,wiki_dir)
 	json_cache_dir='./cache'
 	#生成TimelineJS支持的json文件
-	buildTimelineJSJson(wiki_dir,json_cache_dir)
-
-			
-			
+	#buildTimelineJSJson(wiki_dir,json_cache_dir)
 
 
 
