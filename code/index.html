@@ -11,6 +11,25 @@
        padding: 0px;
        margin: 0px;
       }
+      div.cls1{
+       display: table-cell;
+       border: 1px solid black; 
+       text-align: center;
+       vertical-align: middle;
+       cursor: pointer ;
+      }     
+      div.cls2{
+       display: table-cell;
+       border: 1px solid black; 
+       text-align: center;
+       vertical-align: middle;
+       width:5px;
+       height:5px;
+       cursor: pointer;
+      }
+      div.cls1:hover,div.cls2:hover{
+      background:blue;
+      }
     </style>
         <!-- jQuery -->
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -24,11 +43,9 @@
 		  success: function(data, textStatus, jqXHR){
 		    for(var i in data){
 		      if (i%20==0)
-		       $('#timezone-bar').append('<div id="'+data[i].id+'" style="display: table-cell;border: 1px solid black; \
-		       text-align: center;vertical-align: middle;cursor: pointer ;" onclick="timezone('+data[i].id+')" >'+data[i].title+'</div>');
+		       $('#timezone-bar').append('<div id="'+data[i].id+'"  class="cls1" onclick="timezone('+data[i].id+')" >'+data[i].title+'</div>');
 		      else
-		        $('#timezone-bar').append('<div  id="'+data[i].id+'" style="display: table-cell;border: 1px solid black; \
-			text-align: center;vertical-align: middle;width:5px;height:5px;cursor: pointer ;" onclick="timezone('+data[i].id+')" title="'+data[i].title+'"/>');
+		        $('#timezone-bar').append('<div  id="'+data[i].id+'" class="cls2" onclick="timezone('+data[i].id+')" title="'+data[i].title+'"/>');
 		    }
 		  }
 		});	        
