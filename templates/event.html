@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <title>${event.title}</title>
+</head>
+<body>
+<div style="margin: 10px;">
+<form method="post">
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" name="title" id="title" placeholder="Title" value="${event.title}">
+  </div>
+  <div class="form-group">
+    <label for="abstract">Abstract</label>
+      <textarea class="form-control" name="abstract" id="abstract" placeholder="Abstract" >${event.abstract}</textarea>
+  </div>
+  <div class="form-group">
+      <input type="number" name="year" value="${event.year}">
+      -<input type="number" name="month" value="${event.month}">
+      -<input type="number" name="day" value="${event.day}">
+      ~<input type="number" name="year2" value="${event.year2}">
+      -<input type="number" name="month2" value="${event.month2}">
+      -<input type="number" name="day2" value="${event.day2}">
+  </div>
+  <div class="form-group">
+    <label for="online_uri_list">Url List</label>
+    <input type="text" class="form-control" name="online_uri_list" id="online_uri_list" placeholder="Url,Url,..." value="${event.online_uri_list}">
+  </div>
+  <div class="form-group">
+    <label for="thumbnail_uri_list">Thumbnail Url List</label>
+    <input type="text" class="form-control" name="thumbnail_uri_list" id="thumbnail_uri_list" placeholder="Url,Url,..." value="${event.thumbnail_uri_list}">
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</div>
+
+</body>
+</html>
