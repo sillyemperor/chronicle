@@ -11,9 +11,15 @@
 
 <div style="margin:10px;">
     <a href="event" class="btn btn-primary">Add</a>
+    <a href="/?p=${prev_p}" style="margin:5px;"> << </a>
+    <a href="/?p=${next_p}" style="margin:5px;"> >> </a>
+    <input type="text" id="words" value="${query}">
+    <span style="margin:10px;"></span><a class="btn btn-default" onclick="do_query()">Query</a>
+    <span style="margin:10px;"></span><a class="btn btn-default" href="/?clear=1">Clear</a>
 </div>
 
-<table class="table-striped" style="margin:10px;">
+<div>
+<table class="table table-striped" style="margin:10px;">
     <thead>
     <tr>
         <th>Time</th>
@@ -23,7 +29,14 @@
     <tbody>
     % for i in events:
     <tr>
-        <td>${i.year}</td>
+        <td>
+            ${abs(i.year)}
+            % if i.year>0:
+            AD
+            % else:
+            BC
+            %endif
+        </td>
         <td>
             <a href="event/${i.id}">
                 ${i.title}
@@ -34,5 +47,19 @@
     % endfor
     </tbody>
 </table>
+
+</div>
+
+<script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    function do_query(){
+        var q = $('#words').val();
+        if(q.length<1){
+            alert('Query parameter is empty!');
+            return;
+        }
+        window.location.href = '/?q='+q;
+    }
+</script>
 </body>
 </html>
