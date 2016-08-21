@@ -2,7 +2,7 @@ from bottle import get,post, route, run, template, request, redirect, response
 import view
 import models
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy import func
 import base64
 
@@ -29,13 +29,13 @@ def index():
     # count = session.query(func.count('*')).select_from(models.Event).scalar()
     query = session.query(models.Event)
     if q:
-        query = query.filter(models.Event.title.like('%'+q+'%'))
+        query = query.filter(or_(models.Event.title.like('%'+q+'%'), models.Event.abstract.like('%'+q+'%')))
     return view.render('index.html',
                        title='Event',
                        query = q,
                        prev_p = p>0 and p-1 or 0,
                        next_p = p+1,
-                       events=query.order_by(models.Event.year)[p*ps:p*ps+ps]
+                       events=query.order_by(models.Event.year, models.Event.month, models.Event.day)[p*ps:p*ps+ps]
                        )
 
 
