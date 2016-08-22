@@ -29,7 +29,14 @@ def index():
     # count = session.query(func.count('*')).select_from(models.Event).scalar()
     query = session.query(models.Event)
     if q:
-        query = query.filter(or_(models.Event.title.like('%'+q+'%'), models.Event.abstract.like('%'+q+'%')))
+        if q[-2:] == 'AD' and q[:-2].isdigit():
+            y = int(q[:-2])
+            query = query.filter(models.Event.year==y)
+        elif  q[-2:] == 'BC' and q[:-2].isdigit():
+            y = -int(q[:-2])
+            query = query.filter(models.Event.year==y)
+        else:
+            query = query.filter(or_(models.Event.title.like('%'+q+'%'), models.Event.abstract.like('%'+q+'%')))
     return view.render('index.html',
                        title='Event',
                        query = q,
