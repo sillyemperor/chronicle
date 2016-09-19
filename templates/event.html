@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <title>${event.title}</title>
 </head>
-<body>
+<body onload="main()">
 <div style="margin: 10px;">
 <form method="post">
   <div class="form-group">
@@ -34,10 +34,52 @@
     <label for="thumbnail_uri_list">Thumbnail Url List</label>
     <input type="text" class="form-control" name="thumbnail_uri_list" id="thumbnail_uri_list" placeholder="Url,Url,..." value="${event.thumbnail_uri_list}">
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="form-group">
+        <label for="online_uri_list">Position</label>
+        X:<input type="number" step="any" t name="x" id="x" value="${event.x}">Y:<input type="number" step="any" name="y" id="y" value="${event.y}">
+    </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     <a class="btn btn-default" href="${referer}">Cancel</a>
+
+
 </form>
 </div>
+<div id='myMap' style="position:relative;width:100%; height:400px;"></div>
+<script type='text/javascript'
+            src='http://www.bing.com/api/maps/mapcontrol?callback=main'
+            async defer></script>
+<script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+<script>
+var map;
+var pin;
 
+function view_change(){
+var loc = map.getCenter();
+pin.setLocation(loc);
+$('#x').val(loc.longitude);
+$('#y').val(loc.latitude);
+}
+
+function main(){
+   map  = new Microsoft.Maps.Map('#myMap', {
+            credentials: 'Your Bing Maps Key'
+        });
+   var center = map.getCenter();
+
+        //Create custom Pushpin
+        pin = new Microsoft.Maps.Pushpin(center, {
+            title: 'Microsoft',
+            subTitle: 'City Center',
+            text: '1'
+        });
+
+        //Add the pushpin to the map
+        map.entities.push(pin);
+        Microsoft.Maps.Events.addHandler(map, 'viewchangestart', view_change);
+        Microsoft.Maps.Events.addHandler(map, 'viewchange', view_change);
+    Microsoft.Maps.Events.addHandler(map, 'viewchangeend', view_change);
+}
+
+</script>
 </body>
 </html>

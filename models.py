@@ -16,4 +16,6 @@ class Event(Base):
     year2 = Column(Integer, doc='year,is negative when BC')
     month2 = Column(Integer, doc='month')
     day2 = Column(Integer, doc='day')
+    x = Column(Float, doc='postion longitude')
+    y = Column(Float, doc='postion latitude')
 
