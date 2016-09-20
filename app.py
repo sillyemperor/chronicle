@@ -69,6 +69,8 @@ def post_event(id=0):
     day2 = request.forms.get('day2')
     online_uri_list = request.forms.get('online_uri_list')
     thumbnail_uri_list = request.forms.get('thumbnail_uri_list')
+    x = request.forms.get('x')
+    y = request.forms.get('y')
 
     try:
         event = session.query(models.Event).filter(models.Event.id == id).one()
@@ -82,6 +84,8 @@ def post_event(id=0):
         event.day2 = day2
         event.online_uri_list = online_uri_list
         event.thumbnail_uri_list = thumbnail_uri_list
+        event.x = x
+        event.y = y
     except:
         session.add(models.Event(
             title=unicode(title, 'utf-8'),
@@ -93,7 +97,9 @@ def post_event(id=0):
             month2=month2,
             day2=day2,
             online_uri_list=online_uri_list,
-            thumbnail_uri_list=thumbnail_uri_list
+            thumbnail_uri_list=thumbnail_uri_list,
+            x = x,
+            y = y
         ))
     session.commit()
     redirect('/event')
