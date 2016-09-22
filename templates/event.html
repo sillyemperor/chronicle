@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <title>${event.title}</title>
 </head>
-<body onload="main()">
+<body>
 <div style="margin: 10px;">
 <form method="post">
   <div class="form-group">
@@ -67,6 +67,12 @@ function main(){
     Microsoft.Maps.Events.addHandler(map, 'viewchangestart', view_change);
     Microsoft.Maps.Events.addHandler(map, 'viewchange', view_change);
     Microsoft.Maps.Events.addHandler(map, 'viewchangeend', view_change);
+
+    map.setView({
+        mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+        center: new Microsoft.Maps.Location(${event.y}, ${event.x}),
+        zoom: 15
+    });
 }
 
 </script>
