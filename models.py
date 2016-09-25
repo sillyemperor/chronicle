@@ -18,4 +18,5 @@ class Event(Base):
     day2 = Column(Integer, doc='day')
     x = Column(Float, doc='postion longitude')
     y = Column(Float, doc='postion latitude')
+    timestamp = Column(BigInteger, doc='year*10000+month*100+day')
 
