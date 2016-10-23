@@ -59,7 +59,7 @@ def event(id=0):
 def next_event(id=0):
     try:
         event = session.query(models.Event).filter(models.Event.id == id).one()
-        event = session.query(models.Event).filter(models.Event.timestamp > event.timestamp)\
+        event = session.query(models.Event).filter(and_(models.Event.timestamp >= event.timestamp, models.Event.id != id))\
             .order_by(models.Event.timestamp)\
             .first()
     except Exception as ext:
@@ -70,7 +70,7 @@ def next_event(id=0):
 def last_event(id=0):
     try:
         event = session.query(models.Event).filter(models.Event.id == id).one()
-        event = session.query(models.Event).filter(models.Event.timestamp < event.timestamp)\
+        event = session.query(models.Event).filter(and_(models.Event.timestamp <= event.timestamp, models.Event.id != id))\
             .order_by(models.Event.timestamp.desc())\
             .first()
     except Exception as ext:
@@ -94,8 +94,12 @@ def post_event(id=0):
     y = request.forms.get('y')
     timestamp = year*10000+month*100+day
 
-    event = session.query(models.Event).filter(models.Event.id == id).one()
+    if id:
+        event = session.query(models.Event).filter(models.Event.id == id).one()
+    else:
+        event = None
 
+    is_add = False;
     try:
         if event:
             event.abstract = unicode(abstract, 'utf-8')
@@ -128,10 +132,14 @@ def post_event(id=0):
                 timestamp=timestamp
             )
             session.add(event)
+            is_add = True
         session.commit()
     except:
         session.rollback()
-    redirect('/event/%d' % event.id)
+    if is_add:
+        redirect('/event')
+    else :
+        redirect('/event/%d' % event.id)
 
 run(host='localhost', port=8080)
 
