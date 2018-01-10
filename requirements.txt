@@ -8,5 +8,5 @@ six==1.10.0
 sqlalchemy==1.0.14
 sqlalchemy-migrate==0.10.0
 sqlparse==0.2.0
-stackless-python==2.7.2.2
 Tempita==0.5.2
+Django==1.11.7

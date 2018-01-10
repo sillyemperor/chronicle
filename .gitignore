@@ -1,2 +1,7 @@
 .idea
 *.pyc
+venv
+wiki_files
+wiki_text
+code/cache
+*.sqlite3
