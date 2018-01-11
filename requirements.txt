@@ -10,3 +10,8 @@ sqlalchemy-migrate==0.10.0
 sqlparse==0.2.0
 Tempita==0.5.2
 Django==1.11.7
+Fabric==1.14.0
+djangorestframework>=3
+markdown>=2.1.0
+django-filter>=1.0.1
+coreapi>=2.3.3
