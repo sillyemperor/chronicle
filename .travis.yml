@@ -8,5 +8,6 @@ script:
   - python manage.py test
 after_success:
   - fab -u travis -p $TRAVIS_PASSWORD -H $DEPLOY_TARGET_HOSTS deploy
-  - cd ..
+  - cd ../
+  - pwd
   - ./startup.sh
