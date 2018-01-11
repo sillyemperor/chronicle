@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
 from rest_framework.documentation import include_docs_urls
 from event import views
 
@@ -22,4 +25,4 @@ urlpatterns = [
     url(r'^docs/', include_docs_urls(title='API Doc')),
     url(r'^admin/', admin.site.urls),
     url(r'^event/', views.EventView.as_view()),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
