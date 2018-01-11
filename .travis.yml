@@ -6,3 +6,5 @@ install:
 script:
   - cd adminsite
   - python manage.py test
+after_success:
+  - fab $DEPLOY_TARGET_HOSTS host_type
