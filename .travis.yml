@@ -7,4 +7,4 @@ script:
   - cd adminsite
   - python manage.py test
 after_success:
-  - fab -H $DEPLOY_TARGET_HOSTS host_type
+  - fab -user travis -p $TRAVIS_PASSWORD -H $DEPLOY_TARGET_HOSTS host_type
