@@ -16,3 +16,4 @@ markdown>=2.1.0
 django-filter>=1.0.1
 coreapi>=2.3.3
 gunicorn>=19.7.1
+fabric-virtualenv==0.3.0
