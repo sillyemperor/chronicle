@@ -13,6 +13,8 @@ def deploy():
         with virtualenv('../venv/'):
             run('python manage.py collectstatic -v0 --noinput')
             run('python manage.py migrate')
+            run('killall gunicorn || true')
+            run('gunicorn -c gunisettings.py adminsite.wsgi > /dev/null', pty=False)
 
 
 
