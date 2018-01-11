@@ -4,6 +4,3 @@ from fabric.state import env
 
 def host_type():
     run('uname -s')
-
-def pull():
-    run('git pull')
