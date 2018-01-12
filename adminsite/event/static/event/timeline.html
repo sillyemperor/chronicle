@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>编年史</title>
+    <meta charset="utf-8"/>
+    <meta name="Keywords" content="世界历史,事件,时间表,查看,浏览,World History,Timelime"/>
+
+    <style>
+      html, body {
+       height:100%;
+       padding: 0px;
+       margin: 0px;
+      }
+      div.cls1{
+       display: table-cell;
+       border: 1px solid black;
+       text-align: center;
+       vertical-align: middle;
+       cursor: pointer ;
+      }
+      div.cls2{
+       display: table-cell;
+       border: 1px solid black;
+       text-align: center;
+       vertical-align: middle;
+       width:5px;
+       height:5px;
+       cursor: pointer;
+      }
+      div.cls1:hover,div.cls2:hover{
+      background:blue;
+      }
+
+    </style>
+    <link title="timeline-styles" rel="stylesheet"
+          href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+    <script>
+            var timezones;
+            $(document).ready(function() {
+                $.ajax({
+                  dataType: "json",
+                  url: '/event/timeline/timezone',
+                  success: function(data, textStatus, jqXHR){
+                    timezones = data;
+                    for(var i in timezones){
+                      if (i%20==0)
+                       $('#timezone-bar').append('<div id="'+data[i].id+'"  class="cls1" onclick="show_timezone('+i+')" >'+data[i].title+'</div>');
+                      else
+                        $('#timezone-bar').append('<div  id="'+data[i].id+'" class="cls2" onclick="show_timezone('+i+')" title="'+data[i].title+'"/>');
+                    }
+                    show_timezone(0);
+                  }
+                });
+
+            });
+
+            function show_timezone(i) {
+                var tz = timezones[i];
+                $( "#timezone-bar" ).children().css( "background-color", "white" );
+                $( "#"+tz.id ).css( "background-color", "gray" );
+                $('#my-timeline').empty();
+                window.timeline = new TL.Timeline('my-timeline', '/event/timeline/event/'+tz.ids);
+            }
+
+    </script>
+</head>
+<body>
+<div id="timezone-bar" style="display: table;overflow-x:scroll ; overflow-y: hidden;"></div>
+<div id="my-timeline"></div>
+</body>
+</html> 

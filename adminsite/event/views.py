@@ -2,11 +2,54 @@
 from __future__ import unicode_literals
 
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 
 from models import Event, encode_timestamp
 from serializers import EventSerializer
+
+@api_view(['GET'])
+def get_timeline_timezone(request):
+    events = Event.objects.all().order_by('year')
+    timezones = []
+    ids = []
+    year1 = None
+    year2 = None
+    for i, event in enumerate(events):
+        ids.append(event.id)
+        if len(ids) > 100:
+            if not year1:
+                year1 = event.year
+            if not year2:
+                year2 = event.year
+            if year1 and year2:
+                timezones.append(dict(
+                    id='%s-%s' % (year1, year2),
+                    ids=ids,
+                    title='%s-%s' % (year1, year2)
+                ))
+                ids = []
+                year1 = year2
+                year2 = None
+    return Response(timezones)
+
+
+@api_view(['GET'])
+def get_timeline_events(request, ids):
+    events = Event.objects.filter(id__in=map(int, ids.split(',')))
+    # 格式参考：http://timeline.knightlab.com/docs/json-format.html
+    return Response(dict(
+        events=[
+            dict(
+                text=dict(
+                    headline=i.abstract[:10]+(i.online_url and '<a href="%s" target="__blank">链接</a>'%i.online_url or ''),
+                    text=i.abstract
+                ),
+                start_date=dict(year=i.year)
+            )
+            for i in events
+        ]))
 
 
 def parse_date(s):

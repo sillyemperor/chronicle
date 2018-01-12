@@ -24,5 +24,6 @@ from event import views
 urlpatterns = [
     url(r'^docs/', include_docs_urls(title='API Doc')),
     url(r'^admin/', admin.site.urls),
-    url(r'^event/', views.EventView.as_view()),
+    url(r'^event/timeline/timezone', views.get_timeline_timezone),
+    url(r'^event/timeline/event/(?P<ids>(\d+[,]?)+)', views.get_timeline_events),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
