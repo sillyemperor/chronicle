@@ -11,18 +11,18 @@ from serializers import EventSerializer
 
 @api_view(['GET'])
 def get_timeline_timezone(request):
-    events = Event.objects.all().order_by('year')
+    events = Event.objects.filter(public_status__exact=True).order_by('year')
     timezones = []
     ids = []
     year1 = None
     year2 = None
     for i, event in enumerate(events):
+        if not year1:
+            year1 = event.year
+        if not year2:
+            year2 = event.year
         ids.append(event.id)
-        if len(ids) > 100:
-            if not year1:
-                year1 = event.year
-            if not year2:
-                year2 = event.year
+        if len(ids) > 200:
             if year1 and year2:
                 timezones.append(dict(
                     id='%s-%s' % (year1, year2),
@@ -32,12 +32,18 @@ def get_timeline_timezone(request):
                 ids = []
                 year1 = year2
                 year2 = None
+    if ids:
+        timezones.append(dict(
+            id='%s-%s' % (year1, year2),
+            ids=ids,
+            title='%s-%s' % (year1, year2)
+        ))
     return Response(timezones)
 
 
 @api_view(['GET'])
 def get_timeline_events(request, ids):
-    events = Event.objects.filter(id__in=map(int, ids.split(',')))
+    events = Event.objects.filter(public_status__exact=True, id__in=map(int, ids.split(',')))
     # 格式参考：http://timeline.knightlab.com/docs/json-format.html
     return Response(dict(
         events=[

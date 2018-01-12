@@ -22,6 +22,7 @@ class Event(models.Model):
     month2 = models.IntegerField(help_text='month of end time if existed,1~12', blank=True, null=True)
     day2 = models.IntegerField(help_text='day of end time if existed,1~31', blank=True, null=True)
     online_url = models.URLField(help_text='Online resource html', max_length=3000, blank=True, null=True)
+    public_status = models.BooleanField(help_text='Is public', default=False)
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)
