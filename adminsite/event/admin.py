@@ -33,7 +33,7 @@ class EventAdmin(admin.ModelAdmin):
 
     def get_search_results(self, request, queryset, search_term):
         years = None
-        word = None
+        word = search_term
         m = re.match(r'(?P<years>[-]?\d+[~][-]?\d+)([+]{1}(?P<word>.+))?', search_term)
         if m:
             groups = m.groupdict()
