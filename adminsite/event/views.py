@@ -41,21 +41,25 @@ def get_timeline_timezone(request):
     return Response(timezones)
 
 
-@api_view(['GET'])
-def get_timeline_events(request, ids):
-    events = Event.objects.filter(public_status__exact=True, id__in=map(int, ids.split(',')))
-    # 格式参考：http://timeline.knightlab.com/docs/json-format.html
-    return Response(dict(
-        events=[
-            dict(
+def mk_timeline_event(i):
+    e = dict(
                 text=dict(
                     headline=i.abstract[:10]+(i.online_url and '<a href="%s" target="__blank">链接</a>'%i.online_url or ''),
                     text=i.abstract
                 ),
                 start_date=dict(year=i.year)
             )
-            for i in events
-        ]))
+    if i.year2 and i.year2-i.year>5:
+        e['end_date'] = dict(year=i.year2)
+    return e
+
+@api_view(['GET'])
+def get_timeline_events(request, ids):
+    events = Event.objects.filter(public_status__exact=True, id__in=map(int, ids.split(',')))
+    # 格式参考：http://timeline.knightlab.com/docs/json-format.html
+
+    return Response(dict(
+        events=map(mk_timeline_event, events)))
 
 
 def parse_date(s):
