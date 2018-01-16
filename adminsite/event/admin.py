@@ -39,7 +39,7 @@ class EventAdmin(admin.ModelAdmin):
             })
             response.encoding = 'utf-8'
             html_str = response.text
-            lines = ['%s !-!-!-! %s'%i for i in utils.html2lines(html_str)]
+            lines = ['1 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(html_str)]
             # print '\r\n'.join(lines)
         else:
             url = ''
@@ -55,10 +55,11 @@ class EventAdmin(admin.ModelAdmin):
             lines = lines.split('\r\n')
             ents = []
             for l in lines:
-                year, text = l.split('!-!-!-!')
+                public_status, year, text = l.split('!-!-!-!')
                 ents.append(Event(
                     year=int(year),
-                    abstract=text
+                    abstract=text,
+                    public_status=bool(public_status)
                 ).prepare())
             Event.objects.bulk_create(ents)
         return redirect('/admin/event/event')
