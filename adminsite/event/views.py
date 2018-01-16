@@ -9,6 +9,7 @@ from rest_framework.exceptions import APIException
 from models import Event, encode_timestamp
 from serializers import EventSerializer
 
+
 @api_view(['GET'])
 def get_timeline_timezone(request):
     events = Event.objects.filter(public_status__exact=True).order_by('year')
@@ -111,3 +112,5 @@ class EventView(APIView):
             q = q.filter(abstract__contains=word)
         serializer = EventSerializer(q[page:size], many=True)
         return Response(serializer.data)
+
+

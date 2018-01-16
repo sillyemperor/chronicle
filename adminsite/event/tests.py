@@ -42,10 +42,25 @@ class ImportFromURL(TestCase):
         for i in utils.html2lines(html_str):
             print i
 
-    def test_parse_lines_whole(self):
-        with open('event/test-data/wuhuluanhua.htm') as fp:
-            for i in utils.html2lines(fp.read()):
-                print i
+    # def test_parse_lines_whole(self):
+    #     with open('event/test-data/wuhuluanhua.htm') as fp:
+    #         for i in utils.html2lines(fp.read()):
+    #             print i
+
+    # def test_parse_lines_url(self):
+    #     import requests
+    #     import codecs
+    #     response = requests.get('https://baike.baidu.com/item/%E4%BA%94%E8%83%A1%E4%B9%B1%E5%8D%8E', headers={
+    #         # https://stackoverflow.com/questions/23651947/python-requests-requests-exceptions-toomanyredirects-exceeded-30-redirects
+    #         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
+    #     })
+    #     response.encoding  = 'utf-8'
+    #     html_str = response.text
+    #     print type(html_str)
+    #     with codecs.open('event/test-data/wuhuluanhua2.htm', 'w', encoding='utf8') as fp:
+    #         fp.write(html_str)
+    #     for i in utils.html2lines(html_str):
+    #         print i
 
 
 

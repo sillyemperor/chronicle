@@ -13,7 +13,7 @@ def html2lines(html_str):
     soup = BeautifulSoup(html_str, 'html.parser')
     for tag in soup.find_all(lambda x: x.name == 'div' and rec.search(x.text)):
         m = rec2.search(tag.text)
-        yield m.group('year'), m.group('text')
+        yield m.group('year'), m.group('text').replace(" ", "").replace("\t", "").replace("\r", "").replace("\n", "")
 
 
 
