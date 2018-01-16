@@ -40,7 +40,7 @@ class EventAdmin(admin.ModelAdmin):
             response.encoding = 'utf-8'
             html_str = response.text
             lines = ['%s !-!-!-! %s'%i for i in utils.html2lines(html_str)]
-            print u'\r\n'.join(lines)
+            # print '\r\n'.join(lines)
         else:
             url = ''
             lines = []
