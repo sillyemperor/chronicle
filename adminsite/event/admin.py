@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from django.conf.urls import url
 import utils
 import requests
+import re
 
 from models import Event
 
@@ -49,9 +50,13 @@ class EventAdmin(admin.ModelAdmin):
                 # https://stackoverflow.com/questions/23651947/python-requests-requests-exceptions-toomanyredirects-exceeded-30-redirects
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
             })
-            response.encoding = 'utf-8'
-            html_str = response.text
-            lines = ['1 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(html_str)]
+            s = response.content
+            r = utils.matchstr(s, ('gb2312', 'utf-8', 'utf8'), False)
+            if r:
+                response.encoding = r[0]
+            print response.encoding
+            # html_str = response.text#response.text.encode(response.encoding).decode('utf-8')
+            lines = ['1 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(response.text)]
             # print '\r\n'.join(lines)
         else:
             url = ''

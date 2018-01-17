@@ -7,8 +7,11 @@ import re
 from bs4 import BeautifulSoup
 
 
-
 class ImportFromURL(TestCase):
+    def test_search(self):
+        r = utils.matchstr('<med a="chartset:GB2312">',('gb2312', 'UTF-8', 'utf8'), True)
+        self.assertEquals('GB2312', r[0])
+
     def test_re_year(self):
         res = r'(?P<year>[前]?\d+)[年]+'
         m = re.search(res, u'354.约公元前1600年—约公元前1046年')
