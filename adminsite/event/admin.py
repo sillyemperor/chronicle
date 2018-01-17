@@ -22,6 +22,16 @@ def event_date_info(e):
 event_date_info.short_description = 'years'
 
 
+def publish_event(modeladmin, request, queryset):
+    queryset.update(public_status=True)
+publish_event.short_description = "Publish events"
+
+
+def unpublish_event(modeladmin, request, queryset):
+    queryset.update(public_status=False)
+unpublish_event.short_description = "UnPublish events"
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_per_page = 10
@@ -29,6 +39,7 @@ class EventAdmin(admin.ModelAdmin):
     exclude = ['timestamp']
     list_display = (event_date_info, 'public_status', 'abstract', 'title')
     search_fields = ['abstract', 'year', 'title']
+    actions = [unpublish_event, publish_event]
 
     def import_html(self, request):
         if 'url' in request.GET:
