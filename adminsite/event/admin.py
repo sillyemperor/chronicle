@@ -12,6 +12,7 @@ import requests
 
 from models import Event
 
+
 def event_date_info(e):
     if not e.year2:
         return e.year
@@ -22,16 +23,6 @@ def event_date_info(e):
 event_date_info.short_description = 'years'
 
 
-def publish_event(modeladmin, request, queryset):
-    queryset.update(public_status=True)
-publish_event.short_description = "Publish events"
-
-
-def unpublish_event(modeladmin, request, queryset):
-    queryset.update(public_status=False)
-unpublish_event.short_description = "UnPublish events"
-
-
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_per_page = 10
@@ -39,7 +30,17 @@ class EventAdmin(admin.ModelAdmin):
     exclude = ['timestamp']
     list_display = (event_date_info, 'public_status', 'abstract', 'title')
     search_fields = ['abstract', 'year', 'title']
-    actions = [unpublish_event, publish_event]
+    actions = ['unpublish_event', 'publish_event']
+
+    def publish_event(self, request, queryset):
+        rows_updated = queryset.update(public_status=True)
+        self.message_user(request, '%s was/were changed' % rows_updated)
+    publish_event.short_description = "Publish events"
+
+    def unpublish_event(self, request, queryset):
+        rows_updated = queryset.update(public_status=False)
+        self.message_user(request, '%s was/were changed' % rows_updated)
+    unpublish_event.short_description = "UnPublish events"
 
     def import_html(self, request):
         if 'url' in request.GET:
