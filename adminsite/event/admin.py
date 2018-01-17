@@ -27,9 +27,10 @@ event_date_info.short_description = 'years'
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_per_page = 10
-    fields = (('year', 'month', 'day'), 'public_status', 'abstract', 'title', ('year2', 'month2', 'day2'), 'online_url')
+    fields = (('year', 'month', 'day'), 'public_status', 'abstract', 'title',
+              ('year2', 'month2', 'day2'), 'level', 'online_url')
     exclude = ['timestamp']
-    list_display = (event_date_info, 'public_status', 'abstract', 'title')
+    list_display = (event_date_info, 'level', 'public_status', 'abstract', 'title')
     search_fields = ['abstract', 'year', 'title']
     actions = ['unpublish_event', 'publish_event']
 
@@ -56,7 +57,7 @@ class EventAdmin(admin.ModelAdmin):
                 response.encoding = r[0]
             print response.encoding
             # html_str = response.text#response.text.encode(response.encoding).decode('utf-8')
-            lines = ['1 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(response.text)]
+            lines = ['1 !-!-!-!3 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(response.text)]
             # print '\r\n'.join(lines)
         else:
             url = ''
@@ -72,11 +73,12 @@ class EventAdmin(admin.ModelAdmin):
             lines = lines.split('\r\n')
             ents = []
             for l in lines:
-                public_status, year, text = l.split('!-!-!-!')
+                public_status, level, year, text = l.split('!-!-!-!')
                 ents.append(Event(
                     year=int(year),
                     abstract=text,
-                    public_status=bool(public_status)
+                    public_status=bool(public_status),
+                    level=int(level),
                 ).prepare())
             Event.objects.bulk_create(ents)
         return redirect('/admin/event/event')

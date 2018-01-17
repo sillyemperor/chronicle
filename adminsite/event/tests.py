@@ -24,6 +24,11 @@ class ImportFromURL(TestCase):
         self.assertEquals('309', m.group('year'))
         self.assertEquals('，前赵帝刘渊迁都平阳，领有山西中部地区。 八月，前赵刘聪第一次进攻洛阳，战败。十月，前赵刘聪第二次进攻洛阳，战败 。', m.group('text'))
 
+        res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>\W+)[。]+'
+        matches = re.findall(res, '后周世宗在稳定国内后即意图统一天下，他以“十年开拓天下，十年养百姓，十年致太平”为目标。955年率军击溃后蜀，占秦州汉中一带。956年率兵击溃南唐，获得江北之地，迫南唐称臣。959年后周世宗率军北伐辽朝以收复燕云十六州，周军陆续攻陷瀛洲、莫州等地。当他准备收复幽州时，却突然生病，被迫班师。[10]  不久去世，其幼子柴宗训即位，即后周恭帝。960年禁军领袖赵匡胤以镇定二州遭北汉、辽朝入侵为由率军北御，而后在开封的陈桥驿发生陈桥兵变，受禁军拥护为帝。赵匡胤回师开封，废黜后周恭帝，后周灭亡，五代结束。他建立宋朝，即宋太祖。')
+        for m in matches:
+            print m[0], m[1]
+
     def test_parse_lines(self):
         html_str = '''
 <html><head><title>The Dormouse's story</title></head>

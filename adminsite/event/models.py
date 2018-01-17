@@ -23,6 +23,14 @@ class Event(models.Model):
     day2 = models.IntegerField(help_text='day of end time if existed,1~31', blank=True, null=True)
     online_url = models.URLField(help_text='Online resource html', max_length=3000, blank=True, null=True)
     public_status = models.BooleanField(help_text='Is public', default=False)
+    CRUCIAL_EVENT = 1
+    KEY_EVENT = 2
+    NORMAL_EVENT = 3
+    level = models.SmallIntegerField(max_length=2, choices=(
+        (CRUCIAL_EVENT, '极其重要的事件'),
+        (KEY_EVENT, '关键的事件'),
+        (NORMAL_EVENT, '过渡性事件'),
+    ), default=NORMAL_EVENT)
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)

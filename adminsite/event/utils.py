@@ -6,15 +6,11 @@ from bs4 import BeautifulSoup
 
 
 def html2lines(html_str):
-    res = r'(?P<year>[前]?\d+[年]+)'
-    rec = re.compile(res)
-    res2 = r'(?P<year>[前]?\d+)[年]+(?P<text>\W+)'
-    rec2 = re.compile(res2)
+    res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>\W+)[。]+'
     soup = BeautifulSoup(html_str, 'html.parser')
-    for tag in soup.find_all(lambda x: x.name in ['p', 'div'] and rec.search(x.text)):
-        m = rec2.search(tag.text)
-        if m:
-            yield m.group('year'), m.group('text').replace(" ", "").replace("\t", "").replace("\r", "").replace("\n", "")
+    s = soup.text
+    for m in re.findall(res, s):
+        yield m[0], m[1].replace(" ", "").replace("\t", "").replace("\r", "").replace("\n", "")
 
 
 def matchstr(s, matches, case_insensitive=False):
