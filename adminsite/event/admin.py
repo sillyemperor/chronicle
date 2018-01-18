@@ -10,6 +10,8 @@ from django.conf.urls import url
 import utils
 import requests
 import re
+from django.http import HttpResponseRedirect
+from django.contrib.admin import helpers
 
 from models import Event
 
@@ -32,17 +34,39 @@ class EventAdmin(admin.ModelAdmin):
     exclude = ['timestamp']
     list_display = (event_date_info, 'level', 'public_status', 'abstract', 'title')
     search_fields = ['abstract', 'year', 'title']
-    actions = ['unpublish_event', 'publish_event']
+    actions = ['set_event_public_status_action', 'set_event_level_action']
 
-    def publish_event(self, request, queryset):
-        rows_updated = queryset.update(public_status=True)
+    def change_field(self, request, queryset, field):
+        value = request.POST[field]
+        for obj in queryset:
+            self.log_change(request, obj, 'set %s=%s' % (field, value))
+        rows_updated = queryset.update(**{field:value})
         self.message_user(request, '%s was/were changed' % rows_updated)
-    publish_event.short_description = "Publish events"
 
-    def unpublish_event(self, request, queryset):
-        rows_updated = queryset.update(public_status=False)
-        self.message_user(request, '%s was/were changed' % rows_updated)
-    unpublish_event.short_description = "UnPublish events"
+    def set_event_public_status_action(self, request, queryset):
+        if request.POST.get('post'):
+            self.change_field(request, queryset, 'public_status')
+            return None
+        return render(request, 'admin/event/set_public_status.html', dict(
+            queryset=queryset,
+            action_checkbox_name=helpers.ACTION_CHECKBOX_NAME,
+            status=(
+                (1, 'Publish'),
+                (0, 'Hide')
+            )
+        ))
+    set_event_public_status_action.short_description = "Change public status of events"
+
+    def set_event_level_action(self, request, queryset):
+        if request.POST.get('post'):
+            self.change_field(request, queryset, 'level')
+            return None
+        return render(request, 'admin/event/set_level.html', dict(
+            queryset=queryset,
+            action_checkbox_name=helpers.ACTION_CHECKBOX_NAME,
+            levels=Event.EVENT_LEVELS
+        ))
+    set_event_level_action.short_description = "Change level of events"
 
     def import_html(self, request):
         if 'url' in request.GET:

@@ -26,11 +26,12 @@ class Event(models.Model):
     CRUCIAL_EVENT = 1
     KEY_EVENT = 2
     NORMAL_EVENT = 3
-    level = models.SmallIntegerField(max_length=2, choices=(
+    EVENT_LEVELS = (
         (CRUCIAL_EVENT, '极其重要的事件'),
         (KEY_EVENT, '关键的事件'),
         (NORMAL_EVENT, '过渡性事件'),
-    ), default=NORMAL_EVENT)
+    )
+    level = models.SmallIntegerField(max_length=2, choices=EVENT_LEVELS, default=NORMAL_EVENT)
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)
