@@ -124,15 +124,7 @@ class EventAdmin(admin.ModelAdmin):
         return formfield
 
     def get_search_results(self, request, queryset, search_term):
-        years = None
-        word = search_term
-        m = re.match(r'(?P<years>[-]?\d+[~][-]?\d+)([+]{1}(?P<word>.+))?', search_term)
-        if m:
-            groups = m.groupdict()
-            if 'years' in groups:
-                years = map(int, groups['years'].split('~'))
-            if 'word' in groups:
-                word = groups['word']
+        years, word = utils.parse_q(search_term)
         queryset, use_distinct = super(EventAdmin, self).get_search_results(request, queryset, word)
         if years and len(years) == 2:
             queryset &= Event.objects.filter(year__gte=years[0]).filter(year__lte=years[1])

@@ -17,13 +17,16 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import TemplateView
 
 from rest_framework.documentation import include_docs_urls
 from event import views
 
 urlpatterns = [
+    url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
     url(r'^docs/', include_docs_urls(title='API Doc')),
     url(r'^admin/', admin.site.urls),
     url(r'^event/timeline/timezone', views.get_timeline_timezone),
     url(r'^event/timeline/event/(?P<ids>(\d+[,]?)+)', views.get_timeline_events),
+    url(r'^event/timeline/event/search', views.get_timeline_search_events),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

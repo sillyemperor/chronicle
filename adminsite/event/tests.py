@@ -8,6 +8,21 @@ from bs4 import BeautifulSoup
 
 
 class ImportFromURL(TestCase):
+    def test_parse_q(self):
+        years, word = utils.parse_q('-120~-100 凯撒')
+        self.assertEquals(-120, years[0])
+        self.assertEquals(-100, years[1])
+        self.assertEquals('凯撒', word)
+
+        years, word = utils.parse_q('-120~-100')
+        self.assertEquals(-120, years[0])
+        self.assertEquals(-100, years[1])
+        self.assertIsNone(word)
+
+        years, word = utils.parse_q('凯撒')
+        self.assertIsNone(years)
+        self.assertEquals('凯撒', word)
+
     def test_search(self):
         r = utils.matchstr('<med a="chartset:GB2312">',('gb2312', 'UTF-8', 'utf8'), True)
         self.assertEquals('GB2312', r[0])

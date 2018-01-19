@@ -5,12 +5,34 @@ import re
 from bs4 import BeautifulSoup
 
 
+def trim(s):
+    return s.replace(" ", "").replace("\t", "").replace("\r", "").replace("\n", "")
+
+
+def parse_q(q):
+    years = None
+    word = q
+    m = re.match(r'^(?P<years>[-]?\d+[~][-]?\d+)', q)#
+    if m:
+        groups = m.groupdict()
+        if 'years' in groups:
+            years = map(int, groups['years'].split('~'))
+            m = re.search(r'[ ]{1}(?P<word>.+)', q)
+            if m:
+                groups = m.groupdict()
+                if 'word' in groups:
+                    word = trim(groups['word'])
+            else:
+                word = None
+    return years, word
+
+
 def html2lines(html_str):
     res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>\W+)[。]+'
     soup = BeautifulSoup(html_str, 'html.parser')
     s = soup.text
     for m in re.findall(res, s):
-        yield m[0], m[1].replace(" ", "").replace("\t", "").replace("\r", "").replace("\n", "")
+        yield m[0], trim(m[1])
 
 
 def matchstr(s, matches, case_insensitive=False):

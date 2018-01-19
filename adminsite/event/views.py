@@ -8,6 +8,7 @@ from rest_framework.exceptions import APIException
 
 from models import Event, encode_timestamp
 from serializers import EventSerializer
+import utils
 
 
 @api_view(['GET'])
@@ -42,6 +43,7 @@ def get_timeline_timezone(request):
     return Response(timezones)
 
 
+# 格式参考：http://timeline.knightlab.com/docs/json-format.html
 def mk_timeline_event(i):
     e = dict(
                 text=dict(
@@ -54,11 +56,36 @@ def mk_timeline_event(i):
         e['end_date'] = dict(year=i.year2)
     return e
 
+
+@api_view(['GET'])
+def get_timeline_search_events(request):
+    page, size = 0, 10
+    q = Event.objects.filter(public_status__exact=True)
+    if 'p' in request.GET:
+        page = int(request.GET['p'])
+    if 'size' in request.GET:
+        size = int(request.GET['size'])
+    if 'q' in request.GET:
+        print request.GET['q']
+        years, word = utils.parse_q(request.GET['q'])
+        print years, word
+        if years and isinstance(years, list):
+            if len(years) > 0:
+                q = q.filter(year__gte=years[0])
+            if len(years) > 1:
+                q = q.filter(year__lte=years[1])
+        if word:
+            q = q.filter(abstract__contains=word)
+    size = min(100, size)
+    page = page * size
+    size = page + size
+    return Response(dict(
+        events=map(mk_timeline_event, q[page:size])))
+
+
 @api_view(['GET'])
 def get_timeline_events(request, ids):
     events = Event.objects.filter(public_status__exact=True, id__in=map(int, ids.split(',')))
-    # 格式参考：http://timeline.knightlab.com/docs/json-format.html
-
     return Response(dict(
         events=map(mk_timeline_event, events)))
 
