@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-29 13:47+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\templates\admin\event\change_list.html:31
+#: .\templates\admin\event\import.html:7
+msgid "Home"
+msgstr ""
+
+#: .\templates\admin\event\change_list.html:49
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: .\templates\admin\event\change_list.html:54
+msgid "IMPORT EVENT"
+msgstr "导入事件"
+
+#: .\templates\admin\event\change_list.html:63
+msgid "Please correct the error below."
+msgstr ""
+
+#: .\templates\admin\event\change_list.html:63
+msgid "Please correct the errors below."
+msgstr ""
+
+#: .\templates\admin\event\change_list.html:74
+msgid "Filter"
+msgstr ""
+
+#: .\templates\admin\event\import.html:8
+msgid "Event"
+msgstr "事件"
+
+#: .\templates\admin\event\import.html:9
+msgid "Import"
+msgstr "导入"
+
+#: .\templates\admin\event\set_level.html:21
+#: .\templates\admin\event\set_public_status.html:21
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would result in deleting related "
+"objects, but your account doesn't have permission to delete the following "
+"types of objects:"
+msgstr ""
+
+#: .\templates\admin\event\set_level.html:28
+#: .\templates\admin\event\set_public_status.html:28
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would require deleting the following "
+"protected related objects:"
+msgstr ""
+
+#: .\templates\admin\event\set_level.html:48
+#: .\templates\admin\event\set_public_status.html:48
+msgid "Yes, I'm sure"
+msgstr ""
+
+#: .\templates\admin\event\set_level.html:49
+#: .\templates\admin\event\set_public_status.html:49
+msgid "No, take me back"
+msgstr ""

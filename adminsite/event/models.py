@@ -31,7 +31,9 @@ class Event(models.Model):
         (KEY_EVENT, '关键的事件'),
         (NORMAL_EVENT, '过渡性事件'),
     )
-    level = models.SmallIntegerField(max_length=2, choices=EVENT_LEVELS, default=NORMAL_EVENT)
+    level = models.SmallIntegerField(choices=EVENT_LEVELS, default=NORMAL_EVENT)
+    longitude = models.FloatField(default=.0)
+    latitude = models.FloatField(default=.0)
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)

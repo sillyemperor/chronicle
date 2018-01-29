@@ -30,11 +30,13 @@ event_date_info.short_description = 'years'
 class EventAdmin(admin.ModelAdmin):
     list_per_page = 10
     fields = (('year', 'month', 'day'), 'public_status', 'abstract', 'title',
-              ('year2', 'month2', 'day2'), 'level', 'online_url')
+              ('year2', 'month2', 'day2'), 'level', 'online_url', ('longitude', 'latitude'))
     exclude = ['timestamp']
     list_display = (event_date_info, 'level', 'public_status', 'abstract', 'title')
     search_fields = ['abstract', 'year', 'title']
     actions = ['set_event_public_status_action', 'set_event_level_action']
+
+    change_form_template = 'admin/event/change_form.html'
 
     def change_field(self, request, queryset, field):
         value = request.POST[field]
