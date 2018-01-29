@@ -13,6 +13,7 @@ def deploy():
         with virtualenv('../venv/'):
             run('python manage.py collectstatic -v0 --noinput')
             run('python manage.py migrate')
+            run('python manage.py test')
             run('supervisorctl restart chronic')
 
 

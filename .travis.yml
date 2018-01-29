@@ -5,7 +5,6 @@ install:
   - pip install -r requirements.txt
 script:
   - cd adminsite
-  - python manage.py test
 after_success:
   - fab -u travis -p $TRAVIS_PASSWORD -H $DEPLOY_TARGET_HOSTS deploy
 notifications:
