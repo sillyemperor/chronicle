@@ -12,18 +12,26 @@ import requests
 import re
 from django.http import HttpResponseRedirect
 from django.contrib.admin import helpers
+from django.utils.html import format_html
 
 from models import Event
 
 
-def event_date_info(e):
+def event_field_years(e):
     if not e.year2:
         return e.year
     delta = e.year2 - e.year
     if delta <=0:
         return e.year
     return '%s~%s(%s)'%(e.year, e.year2, delta)
-event_date_info.short_description = 'years'
+event_field_years.short_description = 'years'
+
+
+def event_field_position(e):
+    if not e.longitude and not e.latitude:
+        return None
+    return format_html('<a target="_blank" href="https://www.openstreetmap.org/#map=10/{latitude}/{longitude}">{longitude:.3f} {latitude:.3f}</a>'.format(longitude=e.longitude, latitude=e.latitude))
+event_field_position.short_description = 'position'
 
 
 @admin.register(Event)
@@ -32,7 +40,7 @@ class EventAdmin(admin.ModelAdmin):
     fields = (('year', 'month', 'day'), 'public_status', 'abstract', 'title',
               ('year2', 'month2', 'day2'), 'level', 'online_url', ('longitude', 'latitude'))
     exclude = ['timestamp']
-    list_display = (event_date_info, 'level', 'public_status', 'abstract', 'title')
+    list_display = (event_field_years, 'level', 'public_status', 'abstract', event_field_position)
     search_fields = ['abstract', 'year', 'title']
     actions = ['set_event_public_status_action', 'set_event_level_action']
 
