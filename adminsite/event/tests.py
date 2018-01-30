@@ -47,7 +47,7 @@ class ImportFromURL(TestCase):
             ['959', '后周世宗率军北伐辽朝以收复燕云十六州，周军陆续攻陷瀛洲、莫州等地'],
             ['960', '禁军领袖赵匡胤以镇定二州遭北汉、辽朝入侵为由率军北御，而后在开封的陈桥驿发生陈桥兵变，受禁军拥护为帝'],
         ]):
-            print m1[1]
+            # print m1[1] travis 每次执行到这里都会报错 UnicodeEncodeError: 'ascii' codec can't encode 
             self.assertEquals(m2[0], m1[0])
             self.assertEquals(m2[1], m1[1])
 
