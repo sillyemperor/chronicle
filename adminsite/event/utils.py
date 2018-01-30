@@ -28,7 +28,7 @@ def parse_q(q):
 
 
 def html2lines(html_str):
-    res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>\W+)[。]+'
+    res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>[^。]+)[。]+'
     soup = BeautifulSoup(html_str, 'html.parser')
     s = soup.text
     for m in re.findall(res, s):
