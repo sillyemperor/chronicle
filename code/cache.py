@@ -56,11 +56,12 @@ def downloadWiki(y1,y2,dir):
 	fname='%s/%s_%s.xml'%(dir,fnameYear(y1),fnameYear(y2))
 	if os.path.exists(fname):
 		return
-	print fname
+	print fname, '<<<'
 	titles= '|'.join([nameYear(y) for y in range(y1,y2)])
 	s=searchWiki(titles)
 	with open(fname,'w+') as f:
-			f.write(s)	
+			f.write(s)
+			print fname, '>>>'
 
 def downloadFromWiki(y1,y2,dir):	
 	if not os.path.exists(dir):
@@ -201,17 +202,17 @@ def buildTimelineJSJson(srcdir,destdir):
 		f.write(json.dumps(cacheInfo))
 
 if __name__=='__main__':
-	wiki_download_dir='./wiki_files'
+	wiki_download_dir='./wiki_files/2'
 	#从维基下载数据！！！！本函数需要单独执行
-	# downloadFromWiki(-1000,2013,wiki_download_dir)
+	# downloadFromWiki(-10000,2018,wiki_download_dir)
 	#有些年份被导引到特定年代，需要处理
-	processRedirection(wiki_download_dir)
-	wiki_dir='./wiki_text'
+	# processRedirection(wiki_download_dir)
+	wiki_dir='./wiki_text/2'
 	#分解成独立的文件，一年一个
 	partXml(wiki_download_dir,wiki_dir)
 	json_cache_dir='./cache'
 	#生成TimelineJS支持的json文件
-	buildTimelineJSJson(wiki_dir,json_cache_dir)
+	# buildTimelineJSJson(wiki_dir,json_cache_dir)
 
 
 
