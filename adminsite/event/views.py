@@ -80,7 +80,7 @@ def get_timeline_search_events(request):
     page = page * size
     size = page + size
     return Response(dict(
-        events=map(mk_timeline_event, q[page:size])))
+        events=map(mk_timeline_event, q.order_by('year')[page:size])))
 
 
 @api_view(['GET'])
