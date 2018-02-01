@@ -17,7 +17,8 @@ class Command(BaseCommand):
         wiki_files = options['wikifiles'][0]
         csv_file = options['csvfile'][0]
         with open(csv_file, 'w+') as fp:
-            writer = csv.writer(fp, delimiter=','.encode('utf8'),
+            writer = csv.writer(fp, delimiter=';'.encode('utf8'),
+                                lineterminator=os.linesep,
                        quotechar='"'.encode('utf8'), quoting=csv.QUOTE_ALL)
             if os.path.isdir(wiki_files):
                 self.do_dir(wiki_files, writer);
@@ -42,7 +43,6 @@ class Command(BaseCommand):
                 day = int(m.group('day'))
         s = (tag in ('出生', '逝世') and tag + ':' or '') + s
         return s.encode('utf8'), month, day
-
 
     def do_file(self, file_path, writer):
         self.stdout.write(file_path)
@@ -70,9 +70,10 @@ class Command(BaseCommand):
                         print year
             if year:
                 for e in events:
-                    writer.writerow((
-                        e[0], year, e[1], e[2]
-                    ))
+                    writer.writerow([
+                        # public_status, level, abstract, year, [month, day, year2, month2, day2, longitude, latitude]
+                        0, 3, e[0], year, e[1], e[2]
+                    ])
 
     def do_dir(self, dir, writer):
         for i in os.listdir(dir):

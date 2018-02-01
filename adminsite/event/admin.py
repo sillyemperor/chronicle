@@ -13,6 +13,8 @@ import re
 from django.http import HttpResponseRedirect
 from django.contrib.admin import helpers
 from django.utils.html import format_html
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.translation import ugettext as _
 
 from models import Event
 
@@ -91,7 +93,7 @@ class EventAdmin(admin.ModelAdmin):
                 response.encoding = r[0]
             print response.encoding
             # html_str = response.text#response.text.encode(response.encoding).decode('utf-8')
-            lines = ['1 !-!-!-!3 !-!-!-! %s !-!-!-! %s'%i for i in utils.html2lines(response.text)]
+            lines = ['"1";"3";"%s";"%s"'%i for i in utils.html2lines(response.text)]
             # print '\r\n'.join(lines)
         else:
             url = ''
@@ -101,21 +103,73 @@ class EventAdmin(admin.ModelAdmin):
             lines=u'\r\n'.join(lines)
         ))
 
+    def upload_file(self, request):
+        import StringIO
+        files = request.FILES.getlist('file')
+        sb = StringIO.StringIO()
+        for f in files:
+            if f.size > 5000000:
+                self.message_user(request, _('The "%s" is too large to import')%f.name)
+                break
+            print f.size, f.content_type, f.charset
+            for c in f.chunks():
+                sb.write(c)
+            break
+        return render(request, 'admin/event/import.html', dict(
+            url='',
+            lines=sb.getvalue()
+        ))
+
     def submit_lines(self, request):
         lines = request.POST['lines']
         if lines:
-            lines = lines.split('\r\n')
-            ents = []
-            for l in lines:
-                public_status, level, year, text = l.split('!-!-!-!')
-                ents.append(Event(
-                    year=int(year),
-                    abstract=text,
-                    public_status=bool(public_status),
-                    level=int(level),
-                ).prepare())
-            Event.objects.bulk_create(ents)
+            # lines = lines.split('\r\n')
+            self.do_import(lines.encode('utf8'))
         return redirect('/admin/event/event')
+
+    def do_import(self, s):
+        import csv
+        import StringIO
+        import os
+        reader = csv.reader(StringIO.StringIO(s), delimiter=';'.encode('utf8'),
+                                lineterminator=os.linesep,
+                       quotechar='"'.encode('utf8'), quoting=csv.QUOTE_ALL)
+        ents = []
+        for row in reader:
+            if not row:
+                continue
+            # public_status, level, abstract, year, [month, day, year2, month2, day2, longitude, latitude]
+            ent = Event(
+                year=int(row[3]),
+                abstract=row[2],
+                public_status=bool(row[0]),
+                level=int(row[1]),
+            )
+            n = len(row)
+            i = 4
+            if i < n and row[i]:
+                ent.month = int(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.day = int(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.year2 = int(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.month2 = int(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.day2 = int(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.longitude = float(row[i])
+                i += 1
+            if i < n and row[i]:
+                ent.latitude = float(row[i])
+                i += 1
+            ents.append(ent.prepare())
+        Event.objects.bulk_create(ents)
 
     def get_urls(self):
         urls = super(EventAdmin, self).get_urls()
@@ -124,6 +178,8 @@ class EventAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.import_html)),
             url(r'submit_lines',
                 self.admin_site.admin_view(self.submit_lines)),
+            url(r'upload_file',
+                self.admin_site.admin_view(self.upload_file)),
         ]
         return my_urls + urls
 

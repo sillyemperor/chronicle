@@ -12,11 +12,17 @@
 {% endif %}
 
 {% block content %}
+<form enctype="multipart/form-data" method="post" action="upload_file">
+  {% csrf_token %}
+  上传CSV文件，不能超过5M
+  <input type="file" name="file" style="width:100%">
+  <input type="submit" value="上传">
+</form>
 <form method="get">
   <input type="text" name="url" value="{{url}}" placeholder="链接，如百度百科词条" style="width:100%">
   <input type="submit" value="解析">
 </form>
-<p>每一行的格式：发布状态(0/1) !-!-!-! 年[~年] !-!-!-! 内容</p>
+<p>每一行的格式：发布状态(0/1);级别(1/2/3);内容;开始年份(<0是BC);[开始月份;开始天;结束年份;结束月份;结束天;经度;纬度]</p>
 <form method="post" action="submit_lines">
   {% csrf_token %}
   <textarea name="lines" style="width:100%" rows="10">{{lines}}</textarea>

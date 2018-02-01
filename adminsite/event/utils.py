@@ -32,7 +32,10 @@ def html2lines(html_str):
     soup = BeautifulSoup(html_str, 'html.parser')
     s = soup.text
     for m in re.findall(res, s):
-        yield m[0], trim(m[1])
+        ym = re.match(r'[前]?(?P<year>\d+)', m[0])
+        if ym:
+            ys = ym.group('year')
+            yield trim(m[1]), '%s%s'%(('前' in m[0] and '-' or ''), ys)
 
 
 def matchstr(s, matches, case_insensitive=False):
