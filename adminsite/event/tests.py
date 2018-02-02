@@ -7,7 +7,7 @@ import re
 from bs4 import BeautifulSoup
 
 
-class ImportFromURL(TestCase):
+class ParseHTMLTests(TestCase):
     def test_parse_q(self):
         years, word = utils.parse_q('-120~-100 凯撒')
         self.assertEquals(-120, years[0])
@@ -92,6 +92,25 @@ class ImportFromURL(TestCase):
     #         fp.write(html_str)
     #     for i in utils.html2lines(html_str):
     #         print i
+
+
+from models import Event, Tag
+
+
+class EventTagTests(TestCase):
+    def test_event_tag(self):
+        tag1 = Tag(name='五胡十六国')
+        tag1.save()
+        tag2 = Tag(name='五胡乱华')
+        tag2.save()
+        evnt = Event(year=304, abstract='氐族领袖李雄占成都，自称“成都王”，史称成汉')
+        evnt.save()
+        evnt.tags.add(tag1, tag2)
+        evnt.save()
+
+        evnt = Event.objects.get(pk=evnt.pk)
+        print evnt.tags.all()
+
 
 
 

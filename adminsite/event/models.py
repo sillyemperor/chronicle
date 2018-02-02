@@ -5,6 +5,13 @@ from django.db import models
 import math
 
 
+class Tag(models.Model):
+    """
+    Tag of event
+    """
+    name = models.CharField(max_length=128)
+
+
 def encode_timestamp(year, month, day):
     return (year < 0 and -1 or 1) * (abs(year) * 10000 + month * 100 + day)
 
@@ -35,6 +42,7 @@ class Event(models.Model):
     level = models.SmallIntegerField(choices=EVENT_LEVELS, default=NORMAL_EVENT)
     longitude = models.FloatField(default=.0)
     latitude = models.FloatField(default=.0)
+    tags = models.ManyToManyField(Tag)
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)
