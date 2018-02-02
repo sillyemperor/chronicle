@@ -11,50 +11,143 @@
           href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
     <style>
         .input-group {
-            width: 200px;
+            width: 500px;
         }
-        #my-timeline {
-            height:300px;
+        .index-pane {
+            float:right;
         }
+        .events-pane {
+        }
+
+
+
+
     </style>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+    </script>
     <script>
     $(function() {
         $('#search').on('click', function(){
             search($('#search-q').val());
         });
         $('#search').keydown(function (e) {
-        alert(e.which);
+            alert(e.which);
             var key = e.which;
             if(key == 13) {
                 search($('#search-q').val());
                 return false;
             }
         });
-        search('')
+        search('');
     });
 
     function search(q) {
-        $('#my-timeline').empty();
-        new TL.Timeline('my-timeline', '/event/timeline/event/search?q='+q);
+        $.getJSON("/event/index/search?q="+q, function( data ) {
+            //console.log(data);
+            $('#events').empty();
+            $('#event-index').empty();
+            for(var i in data) {
+                var d = data[i];
+                $('#event-index').append('<button type="button" class="list-group-item index-button" data-src="'
+                +d.ids.join(",")+'">'+d.title+'('+d.ids.length+'件)</button>');
+            }
+            $('.index-button').on('click', function(e){
+                fetch_events(e.target.dataset.src);
+            });
+            if(data) {
+                fetch_events(data[0].ids);
+            }
+        });
+    }
+
+    function fetch_events(ids) {
+        console.log(ids);
+        if(!ids) {
+            return;
+        }
+        $.getJSON("event/"+ids, function( data ) {
+            //console.log(data);
+            $('#events').empty();
+            for(var i in data.events) {
+                var d = data.events[i];
+                $('#events').append(mk_event_html(d));
+            }
+        });
+    }
+
+    function mk_event_html(event) {
+        var s = mk_date_range_html(event);
+        if(event.online_url) {
+            s += '<a target="_blank" href="'+event.online_url+'"><span class="badge"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span></a>';
+        }
+        if(event.latitude && event.longitude) {
+            s +=  '<a target="_blank" href="https://www.openstreetmap.org/#map=10/'+event.latitude+'/'+event.longitude+'"><span class="badge"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></span></a>';
+        }
+        return '<li class="list-group-item"><h3>'+s+'</h3><p>'+event.abstract+'</p>'+'</li>';
+    }
+
+    function mk_date_range_html(event) {
+        var s = mk_date_html(event.year, event.month, event.day);
+        var s2 = mk_date_html(event.year2, event.month2, event.day2);
+        if(s2) {
+            s += '~'+s2;
+        }
+        return s;
+    }
+
+    function mk_date_html(year, month, day) {
+        if(year == null)
+            return;
+        var s = (year<0?'前':'')+Math.abs(year)+'年';
+        if(month) {
+            s += month+'月';
+        }
+        if(day) {
+            s += day+'日';
+        }
+        return s;
     }
 
     </script>
     <title>历史事件</title>
 </head>
 <body>
-<div class="input-group">
-    <input id="search-q" type="text" class="form-control" placeholder="格式：[year[~year]][ 关键词]，-120~-100 凯撒">
-    <span class="input-group-btn">
-        <button id="search" class="btn btn-default" type="button">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        </button>
-      </span>
-</div><!-- /input-group -->
-<div id="my-timeline"></div>
+
+<nav class="navbar navbar-default">
+    <div class="navbar-form navbar-right">
+        <div class="input-group">
+            <input id="search-q" type="text" class="form-control" placeholder="格式：[year[~year]][ 关键词]，-120~-100 凯撒">
+            <span class="input-group-btn">
+                <button id="search" class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+            </span>
+        </div><!-- /input-group -->
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-9" role="main">
+            <ul id="events" class="list-group">
+            </ul>
+        </div>
+        <div class="col-md-3" role="complementary">
+            <nav>
+                <ul id="event-index" class="list-group">
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+
+</div>
+
+
 </body>
 </html>

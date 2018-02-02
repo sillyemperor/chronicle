@@ -8,6 +8,7 @@ import math
 def encode_timestamp(year, month, day):
     return (year < 0 and -1 or 1) * (abs(year) * 10000 + month * 100 + day)
 
+
 class Event(models.Model):
     """
     Event

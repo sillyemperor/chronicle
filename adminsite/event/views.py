@@ -5,42 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from django.forms.models import model_to_dict
 
 from models import Event, encode_timestamp
 from serializers import EventSerializer
 import utils
-
-
-@api_view(['GET'])
-def get_timeline_timezone(request):
-    events = Event.objects.filter(public_status__exact=True).order_by('year')
-    timezones = []
-    ids = []
-    year1 = None
-    year2 = None
-    for i, event in enumerate(events):
-        if not year1:
-            year1 = event.year
-        if not year2:
-            year2 = event.year
-        ids.append(event.id)
-        if len(ids) > 200:
-            if year1 and year2:
-                timezones.append(dict(
-                    id='%s-%s' % (year1, year2),
-                    ids=ids,
-                    title='%s-%s' % (year1, year2)
-                ))
-                ids = []
-                year1 = year2
-                year2 = None
-    if ids:
-        timezones.append(dict(
-            id='%s-%s' % (year1, year2),
-            ids=ids,
-            title='%s-%s' % (year1, year2)
-        ))
-    return Response(timezones)
 
 
 # 格式参考：http://timeline.knightlab.com/docs/json-format.html
@@ -58,9 +27,53 @@ def mk_timeline_event(i):
 
 
 @api_view(['GET'])
+def search_event_index(request):
+    q = Event.objects.order_by('year').filter(public_status__exact=True)
+    if 'q' in request.GET:
+        print request.GET['q']
+        years, word = utils.parse_q(request.GET['q'])
+        print years, word
+        if years and isinstance(years, list):
+            if len(years) > 0:
+                q = q.filter(year__gte=years[0])
+            if len(years) > 1:
+                q = q.filter(year__lte=years[1])
+        if word:
+            q = q.filter(abstract__contains=word)
+    timezones = []
+    ids = []
+    year1 = None
+    year2 = None
+    for i, event in enumerate(q):
+        if not year1:
+            year1 = event.year
+        if not year2:
+            year2 = event.year
+        ids.append(event.id)
+        if len(ids) >= 100:
+            if year1 and year2 and ids:
+                timezones.append(dict(
+                    id='%s-%s' % (year1, year2),
+                    ids=ids,
+                    title=('%s年~%s年' % (year1, year2)).replace('-', '前')
+                ))
+            ids = []
+            year1 = year2
+            year2 = None
+    if ids:
+        timezones.append(dict(
+            id='%s-%s' % (year1, year2),
+            ids=ids,
+            title=('%s年~%s年' % (year1, year2)).replace('-', '前')
+        ))
+    return Response(timezones)
+
+
+
+@api_view(['GET'])
 def get_timeline_search_events(request):
     page, size = 0, 10
-    q = Event.objects.filter(public_status__exact=True)
+    q = Event.objects.order_by('year').filter(public_status__exact=True)
     if 'p' in request.GET:
         page = int(request.GET['p'])
     if 'size' in request.GET:
@@ -80,15 +93,21 @@ def get_timeline_search_events(request):
     page = page * size
     size = page + size
     return Response(dict(
-        events=map(mk_timeline_event, q.order_by('year')[page:size])))
+        events=map(mk_timeline_event, q[page:size])))
 
 
 @api_view(['GET'])
 def get_timeline_events(request, ids):
-    events = Event.objects.filter(public_status__exact=True, id__in=map(int, ids.split(',')))
+    events = Event.objects.order_by('year').filter(public_status__exact=True, id__in=map(int, ids.split(',')))
     return Response(dict(
         events=map(mk_timeline_event, events)))
 
+
+@api_view(['GET'])
+def get_events(request, ids):
+    events = Event.objects.order_by('year').filter(public_status__exact=True, id__in=map(int, ids.split(',')))
+    return Response(dict(
+        events=map(model_to_dict, events)))
 
 def parse_date(s):
     # year[/month[/day]]
