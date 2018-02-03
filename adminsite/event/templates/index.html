@@ -70,29 +70,45 @@
         $.getJSON("event/"+ids, function( data ) {
             //console.log(data);
             $('#events').empty();
+            var year = null;
+            var event_htmls = []
             for(var i in data) {
                 var d = data[i];
-                $('#events').append(mk_event_html(d));
+                if( year == null ) {
+                    year = d.year;
+                }
+                if(year != d.year) {
+                    $('#events').append(mk_events_html(year, event_htmls));
+                    year = d.year;
+                    event_htmls = []
+                }
+                event_htmls.push(mk_event_html(d));
+            }
+            if(event_htmls) {
+                $('#events').append(mk_events_html(year, event_htmls));
             }
         });
     }
 
+    function mk_events_html(year, event_htmls) {
+        return '<li class="list-group-item"><h3>'+((year<0?'前':'')+Math.abs(year)+'年')+'</h3>'+event_htmls.join('')+'</li>'
+    }
+
     function mk_event_html(event) {
-        var s = mk_date_range_html(event);
+        var btn = '';
         if(event.online_url) {
-            s += '<a target="_blank" href="'+event.online_url+'"><span class="badge"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span></a>';
+            btn += '<a target="_blank" href="'+event.online_url+'"><span class="badge"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span></a>';
         }
         if(event.latitude && event.longitude) {
-            s +=  '<a target="_blank" href="https://www.openstreetmap.org/#map=10/'+event.latitude+'/'+event.longitude+'"><span class="badge"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></span></a>';
+            btn +=  '<a target="_blank" href="https://www.openstreetmap.org/#map=10/'+event.latitude+'/'+event.longitude+'"><span class="badge"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></span></a>';
         }
         var tags = '';
         if(event.tags) {
             for(var i in event.tags) {
                 tags += '<span class="label label-primary">'+event.tags[i]+'</span>'
             }
-            tags = '<p>'+tags+'</p>'
         }
-        return '<li class="list-group-item"><h3>'+s+'</h3><p>'+event.abstract+tags+'</p>'+'</li>';
+        return '<p><span class="glyphicon glyphicon-info-sign"></span>'+event.abstract+tags+btn+'</p>';
     }
 
     function mk_date_range_html(event) {
