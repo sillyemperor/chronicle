@@ -47,11 +47,10 @@ def search_event_index(request):
     for i, event in enumerate(q):
         if not year1:
             year1 = event.year
-        if not year2:
-            year2 = event.year
+        year2 = event.year
         ids.append(event.id)
         if len(ids) >= 100:
-            if year1 and year2 and ids:
+            if ids:
                 timezones.append(dict(
                     id='%s-%s' % (year1, year2),
                     ids=ids,
@@ -59,7 +58,6 @@ def search_event_index(request):
                 ))
             ids = []
             year1 = year2
-            year2 = None
     if ids:
         timezones.append(dict(
             id='%s-%s' % (year1, year2),
