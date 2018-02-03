@@ -18,10 +18,9 @@
         }
         .events-pane {
         }
-
-
-
-
+        .label, .badge {
+            margin:2px;
+        }
     </style>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -71,8 +70,8 @@
         $.getJSON("event/"+ids, function( data ) {
             //console.log(data);
             $('#events').empty();
-            for(var i in data.events) {
-                var d = data.events[i];
+            for(var i in data) {
+                var d = data[i];
                 $('#events').append(mk_event_html(d));
             }
         });
@@ -86,7 +85,14 @@
         if(event.latitude && event.longitude) {
             s +=  '<a target="_blank" href="https://www.openstreetmap.org/#map=10/'+event.latitude+'/'+event.longitude+'"><span class="badge"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></span></a>';
         }
-        return '<li class="list-group-item"><h3>'+s+'</h3><p>'+event.abstract+'</p>'+'</li>';
+        var tags = '';
+        if(event.tags) {
+            for(var i in event.tags) {
+                tags += '<span class="label label-primary">'+event.tags[i]+'</span>'
+            }
+            tags = '<p>'+tags+'</p>'
+        }
+        return '<li class="list-group-item"><h3>'+s+'</h3><p>'+event.abstract+tags+'</p>'+'</li>';
     }
 
     function mk_date_range_html(event) {

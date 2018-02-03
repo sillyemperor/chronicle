@@ -106,8 +106,10 @@ def get_timeline_events(request, ids):
 @api_view(['GET'])
 def get_events(request, ids):
     events = Event.objects.order_by('year').filter(public_status__exact=True, id__in=map(int, ids.split(',')))
-    return Response(dict(
-        events=map(model_to_dict, events)))
+    events = map(lambda x:x.as_dict(), events)
+    print len(events)
+    return Response(events)
+
 
 def parse_date(s):
     # year[/month[/day]]

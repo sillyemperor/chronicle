@@ -9,7 +9,10 @@ class Tag(models.Model):
     """
     Tag of event
     """
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
+
+    def __unicode__(self):
+        return self.name
 
 
 def encode_timestamp(year, month, day):
@@ -43,6 +46,18 @@ class Event(models.Model):
     longitude = models.FloatField(default=.0)
     latitude = models.FloatField(default=.0)
     tags = models.ManyToManyField(Tag)
+
+    def as_dict(self):
+        dict = {}
+        # exclude ManyToOneRel, which backwards to ForeignKey
+        field_names = [field.name for field in self._meta.get_fields() if 'ManyToOneRel' not in str(field)]
+        for name in field_names:
+            field_instance = getattr(self, name)
+            if field_instance.__class__.__name__ == 'ManyRelatedManager':
+                dict[name] = map(unicode, field_instance.all())
+                continue
+            dict[name] = field_instance
+        return dict
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)

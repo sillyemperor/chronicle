@@ -22,7 +22,7 @@
   <input type="text" name="url" value="{{url}}" placeholder="链接，如百度百科词条" style="width:100%">
   <input type="submit" value="解析">
 </form>
-<p>每一行的格式：发布状态(0/1);级别(1/2/3);内容;开始年份(<0是BC);[开始月份;开始天;结束年份;结束月份;结束天;经度;纬度]</p>
+<p>每一行的格式：<code>发布状态(0/1);级别(1/2/3);内容;开始年(<0是BC);[开始月;开始天;结束年(<0是BC);结束月;结束天;经度;纬度]</code></p>
 <form method="post" action="submit_lines">
   {% csrf_token %}
   <textarea name="lines" style="width:100%" rows="10">{{lines}}</textarea>

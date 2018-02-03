@@ -16,7 +16,13 @@ from django.utils.html import format_html
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.translation import ugettext as _
 
-from models import Event
+from models import Event, Tag
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_per_page = 10
+    list_display = ('name', )
 
 
 def event_field_years(e):
@@ -36,17 +42,39 @@ def event_field_position(e):
 event_field_position.short_description = 'position'
 
 
+class TagInline(admin.TabularInline):
+    model = Event.tags.through
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    inlines = [
+        TagInline,
+    ]
     list_per_page = 10
     fields = (('year', 'month', 'day'), 'public_status', 'abstract', 'title',
               ('year2', 'month2', 'day2'), 'level', 'online_url', ('longitude', 'latitude'))
     exclude = ['timestamp']
     list_display = (event_field_years, 'level', 'public_status', 'abstract', event_field_position)
     search_fields = ['abstract', 'year', 'title']
-    actions = ['set_event_public_status_action', 'set_event_level_action']
+    actions = ['set_event_public_status_action', 'set_event_level_action', 'set_event_tags_action']
 
-    change_form_template = 'admin/event/change_form.html'
+    change_form_template = 'admin/event/event/change_form.html'
+
+    def set_event_tags_action(self, request, queryset):
+        if request.POST.get('post'):
+            value = request.POST.getlist('tag')
+            tags = map(int, value)
+            for obj in queryset:
+                self.log_change(request, obj, 'set tags=%s' % tags)
+                obj.tags = tags
+                obj.save()
+            return None
+        return render(request, 'admin/event/event/set_tags.html', dict(
+            queryset=queryset,
+            action_checkbox_name=helpers.ACTION_CHECKBOX_NAME,
+            tags=Tag.objects.all()
+        ))
+    set_event_tags_action.short_description = "Change tags of events"
 
     def change_field(self, request, queryset, field):
         value = request.POST[field]
@@ -59,7 +87,7 @@ class EventAdmin(admin.ModelAdmin):
         if request.POST.get('post'):
             self.change_field(request, queryset, 'public_status')
             return None
-        return render(request, 'admin/event/set_public_status.html', dict(
+        return render(request, 'admin/event/event/set_public_status.html', dict(
             queryset=queryset,
             action_checkbox_name=helpers.ACTION_CHECKBOX_NAME,
             status=(
@@ -73,7 +101,7 @@ class EventAdmin(admin.ModelAdmin):
         if request.POST.get('post'):
             self.change_field(request, queryset, 'level')
             return None
-        return render(request, 'admin/event/set_level.html', dict(
+        return render(request, 'admin/event/event/set_level.html', dict(
             queryset=queryset,
             action_checkbox_name=helpers.ACTION_CHECKBOX_NAME,
             levels=Event.EVENT_LEVELS
@@ -98,7 +126,7 @@ class EventAdmin(admin.ModelAdmin):
         else:
             url = ''
             lines = []
-        return render(request, 'admin/event/import.html', dict(
+        return render(request, 'admin/event/event/import.html', dict(
             url=url,
             lines=u'\r\n'.join(lines)
         ))
@@ -115,7 +143,7 @@ class EventAdmin(admin.ModelAdmin):
             for c in f.chunks():
                 sb.write(c)
             break
-        return render(request, 'admin/event/import.html', dict(
+        return render(request, 'admin/event/event/import.html', dict(
             url='',
             lines=sb.getvalue()
         ))
@@ -123,7 +151,6 @@ class EventAdmin(admin.ModelAdmin):
     def submit_lines(self, request):
         lines = request.POST['lines']
         if lines:
-            # lines = lines.split('\r\n')
             self.do_import(lines.encode('utf8'))
         return redirect('/admin/event/event')
 
