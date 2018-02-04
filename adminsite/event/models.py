@@ -63,6 +63,6 @@ class Event(models.Model):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)
         return self
 
-    def save(self):
-        super(Event, self.prepare()).save()
+    def save(self, *args, **kwargs):
+        super(Event, self.prepare()).save(*args, **kwargs)
 

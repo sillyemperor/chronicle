@@ -45,6 +45,7 @@ event_field_position.short_description = 'position'
 class TagInline(admin.TabularInline):
     model = Event.tags.through
 
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     inlines = [
@@ -128,7 +129,8 @@ class EventAdmin(admin.ModelAdmin):
             lines = []
         return render(request, 'admin/event/event/import.html', dict(
             url=url,
-            lines=u'\r\n'.join(lines)
+            lines=u'\r\n'.join(lines),
+            tags=Tag.objects.all()
         ))
 
     def upload_file(self, request):
@@ -145,16 +147,19 @@ class EventAdmin(admin.ModelAdmin):
             break
         return render(request, 'admin/event/event/import.html', dict(
             url='',
-            lines=sb.getvalue()
+            lines=sb.getvalue(),
+            tags=Tag.objects.all()
         ))
 
     def submit_lines(self, request):
         lines = request.POST['lines']
         if lines:
-            self.do_import(lines.encode('utf8'))
+            value = request.POST.getlist('tag')
+            tags = map(int, value)
+            self.do_import(lines.encode('utf8'), tags)
         return redirect('/admin/event/event')
 
-    def do_import(self, s):
+    def do_import(self, s, tags):
         import csv
         import StringIO
         import os
@@ -166,7 +171,13 @@ class EventAdmin(admin.ModelAdmin):
             if not row:
                 continue
             # public_status, level, abstract, year, [month, day, year2, month2, day2, longitude, latitude]
-            ent = Event(
+            # ent = Event(
+            #     year=int(row[3]),
+            #     abstract=row[2],
+            #     public_status=bool(row[0]),
+            #     level=int(row[1]),
+            # )
+            ent = Event.objects.create(
                 year=int(row[3]),
                 abstract=row[2],
                 public_status=bool(row[0]),
@@ -195,8 +206,10 @@ class EventAdmin(admin.ModelAdmin):
             if i < n and row[i]:
                 ent.latitude = float(row[i])
                 i += 1
-            ents.append(ent.prepare())
-        Event.objects.bulk_create(ents)
+            ent.tags = tags
+            ent.save()
+            # ents.append(ent.prepare())
+        # ents = Event.objects.bulk_create(ents)
 
     def get_urls(self):
         urls = super(EventAdmin, self).get_urls()

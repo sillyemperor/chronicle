@@ -25,6 +25,10 @@
 <p>每一行的格式：<code>发布状态(0/1);级别(1/2/3);内容;开始年(<0是BC);[开始月;开始天;结束年(<0是BC);结束月;结束天;经度;纬度]</code></p>
 <form method="post" action="submit_lines">
   {% csrf_token %}
+  {% for tag in tags %}
+  <label for="cb_{{tag.pk}}">{{tag.name}}</label>
+  <input id="cb_{{tag.pk}}" type="checkbox" name="tag" value="{{tag.pk}}"> &nbsp;
+  {% endfor %}
   <textarea name="lines" style="width:100%" rows="10">{{lines}}</textarea>
   <br>
   <input type="submit" value="提交">
