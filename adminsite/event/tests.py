@@ -73,7 +73,7 @@ class ParseHTMLTests(TestCase):
 
         print
         for i in utils.html2lines(html_str):
-            print i[0], i[1], i[2]
+            print i[0].encode('utf8'), i[1], i[2]
 
     def test_parse_sentence(self):
         text = '''
@@ -90,7 +90,7 @@ class ParseHTMLTests(TestCase):
 
         print
         for l in lines:
-            print l[0], l[1], l[2]
+            print l[0].encode('utf8'), l[1], l[2]
 
     def test_parse_sentence_timerange(self):
         text = '''
@@ -101,7 +101,7 @@ class ParseHTMLTests(TestCase):
 
         print
         for l in lines:
-            print l[0], l[1], l[2]
+            print l[0].encode('utf8'), l[1], l[2]
 
     # def test_parse_lines_whole(self):
     #     with open('event/test-data/wuhuluanhua.htm') as fp:
