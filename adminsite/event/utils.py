@@ -28,14 +28,15 @@ def parse_q(q):
 
 
 def html2lines(html_str):
-    res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>[^。]+)[。]+'
+    # res = r'[。]?(?P<year>[前]?\d+)[年]+(?P<text>[^。]+)[。]+'
     soup = BeautifulSoup(html_str, 'html.parser')
     s = soup.text
-    for m in re.findall(res, s):
-        ym = re.match(r'[前]?(?P<year>\d+)', m[0])
-        if ym:
-            ys = ym.group('year')
-            yield trim(m[1]), '%s%s'%(('前' in m[0] and '-' or ''), ys)
+    return text2sentences(s)
+    # for m in re.findall(res, s):
+    #     ym = re.match(r'[前]?(?P<year>\d+)', m[0])
+    #     if ym:
+    #         ys = ym.group('year')
+    #         yield trim(m[1]), '%s%s'%(('前' in m[0] and '-' or ''), ys)
 
 
 def matchstr(s, matches, case_insensitive=False):
@@ -72,4 +73,22 @@ def matchstr(s, matches, case_insensitive=False):
         i += 1
     return r
 
+
+def text2sentences(text):
+    ret = []
+    for l in text.split('。'):
+        m = re.search(r'(?P<year1>[前]?\d+)年([~](?P<year2>[前]?\d+)年)?', l)
+        if m:
+            y1 = m.group('year1')
+            ym = re.search(r'[前]?(?P<year>\d+)', y1)
+            ys = ym.group('year')
+            year1 = '%s%s'%(('前' in y1 and '-' or ''), ys)
+            year2 = ''
+            y1 = m.group('year2')
+            if y1:
+                ym = re.search(r'[前]?(?P<year>\d+)', y1)
+                ys = ym.group('year')
+                year2 = '%s%s' % (('前' in y1 and '-' or ''), ys)
+            ret.append((trim(l), year1, year2))
+    return ret
 

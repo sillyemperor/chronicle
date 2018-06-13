@@ -70,8 +70,38 @@ class ParseHTMLTests(TestCase):
 <div class="para" label-module="para">310年，前赵帝刘渊死，子<a target=_blank href="/item/%E5%88%98%E5%92%8C/5966" data-lemmaid="5966">刘和</a>继位，<a target=_blank href="/item/%E5%88%98%E8%81%AA/31641" data-lemmaid="31641">刘聪</a>杀刘和，篡位。</div>
 </body></html>        
         '''
+
+        print
         for i in utils.html2lines(html_str):
-            print i
+            print i[0], i[1], i[2]
+
+    def test_parse_sentence(self):
+        text = '''
+周襄王十七年（前635年），发生子带之乱，襄王不能平，求救于晋文公，文公诛叔带，遂为伯而得河内地 [4]  。
+周襄王二十年（前632年），襄王为晋文公所迫，于河阳践土会盟 [5]  。
+周赧王时，国势益弱，同时内部争斗不休，以至分为东周国和西周国。赧王迁都西周 [6]  。
+周赧王八年（前307年），秦借道两周之间攻韩，周人两边都不敢得罪，左右为难 [7]  。
+东西两周位于诸强国之间，不能同心协力，反而彼此攻杀 [8]  。
+至赧王五十九年（前256年），西周国被秦所灭，同年赧王病死，西周覆亡 [9-10]  。
+七年后，东周国亦被秦所灭 [11]  。东周共传25王，历时515年， [12]  这一时期是中国的社会制度转变的时期，以铁器的广泛使用为标志。
+        '''
+
+        lines = utils.text2sentences(text)
+
+        print
+        for l in lines:
+            print l[0], l[1], l[2]
+
+    def test_parse_sentence_timerange(self):
+        text = '''
+春秋时期，简称春秋，前770年~前476年（另一说，前770年~前403年），属于东周的一个时期，春秋时代周王的势力减弱，诸侯群雄纷争，齐桓公、晋文公、宋襄公、秦穆公、楚庄王相继称霸，史称“春秋五霸”。（一说是齐桓公、晋文公、楚庄王、吴王阖闾、越王勾践）。春秋时期之后是战国时期。 [13] 
+前685年，齐国齐桓公继位，以管仲为相，实施变法，废除井田制度，按土地的肥瘠，确定赋税，设盐、铁官和铸钱，增加财政收入，寓兵于农，将基层行政组织和军事组织合为一体，增加了兵源和作战能力，迅速成为华夏各国中最富强的国家。然后就打起了“尊王攘夷”的口号，多次大会诸侯，帮助或干涉其它国家，抗击夷狄。周惠王二十一年（前656年），齐桓公带领八个诸侯国的联军，陈兵“蛮夷”楚国边境，质询楚国为何不向周王室朝贡，迫使楚国签订召陵之盟，成为春秋五霸之首。自此，齐桓公建立了会盟霸主的制度。
+        '''
+        lines = utils.text2sentences(text)
+
+        print
+        for l in lines:
+            print l[0], l[1], l[2]
 
     # def test_parse_lines_whole(self):
     #     with open('event/test-data/wuhuluanhua.htm') as fp:
