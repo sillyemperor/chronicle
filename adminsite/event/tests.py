@@ -92,6 +92,19 @@ class ParseHTMLTests(TestCase):
         for l in lines:
             print l[0].encode('utf8'), l[1], l[2]
 
+        text = '''
+早在政和元年（1111），宋徽宗派大宦官童贯出使辽朝，了解
+宋徽宗
+宋徽宗 [47]
+辽朝的政治形势。童贯在这次出使过程中，遇到了燕人马植，向童贯献策取燕，深受童贯赏识，被童贯改名为李良嗣，带回开封。李良嗣向宋徽宗陈说辽天祚帝的荒淫和政治腐败，女真对辽恨之入骨，如能从登莱过海，与女真族结好，相约攻辽，则燕地可取。宋徽宗对此非常高兴，又赐姓赵，开始了谋取燕京的一系列活动。 [47] 
+当辽朝在金兵的进攻下，处于岌岌可危之时，宋徽宗、蔡京等人以为联合女真夹击辽朝，进而收复燕云十六州的时机已成熟。于是，重和元年（1118）宋廷以买马为名，遣使从登州渡海到辽东，同金朝商议共同伐辽的事宜。宣和二年（1120）宋再遣赵良嗣等使金，遂与金订立“海上之盟” [48]  。 [47]  
+                '''
+        lines = utils.text2sentences(text)
+
+        print
+        for l in lines:
+            print l[0].encode('utf8'), l[1], l[2]
+
     def test_parse_sentence_timerange(self):
         text = '''
 春秋时期，简称春秋，前770年~前476年（另一说，前770年~前403年），属于东周的一个时期，春秋时代周王的势力减弱，诸侯群雄纷争，齐桓公、晋文公、宋襄公、秦穆公、楚庄王相继称霸，史称“春秋五霸”。（一说是齐桓公、晋文公、楚庄王、吴王阖闾、越王勾践）。春秋时期之后是战国时期。 [13] 
@@ -102,6 +115,8 @@ class ParseHTMLTests(TestCase):
         print
         for l in lines:
             print l[0].encode('utf8'), l[1], l[2]
+
+
 
     # def test_parse_lines_whole(self):
     #     with open('event/test-data/wuhuluanhua.htm') as fp:

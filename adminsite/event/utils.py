@@ -90,5 +90,15 @@ def text2sentences(text):
                 ys = ym.group('year')
                 year2 = '%s%s' % (('前' in y1 and '-' or ''), ys)
             ret.append((trim(l), year1, year2))
+        else:
+            m = re.search(r'（(?P<year1>[前]?\d+)）', l)
+            if m:
+                y1 = m.group('year1')
+                ym = re.search(r'[前]?(?P<year>\d+)', y1)
+                ys = ym.group('year')
+                year1 = '%s%s' % (('前' in y1 and '-' or ''), ys)
+                year2 = ''
+                ret.append((trim(l), year1, year2))
+
     return ret
 
