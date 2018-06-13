@@ -122,7 +122,7 @@ class EventAdmin(admin.ModelAdmin):
                 response.encoding = r[0]
             print response.encoding
             # html_str = response.text#response.text.encode(response.encoding).decode('utf-8')
-            lines = ['"1";"3";"%s";"%s"'%i for i in utils.html2lines(response.text)]
+            lines = ['"1";"3";"%s";"%s";"";"";"%s"'%i for i in utils.html2lines(response.text)]
             # print '\r\n'.join(lines)
         else:
             url = ''
