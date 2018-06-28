@@ -75,8 +75,10 @@ def matchstr(s, matches, case_insensitive=False):
 
 
 def text2sentences(text):
+    # print text
     ret = []
     for l in text.split('。'):
+        print l,'---'
         m = re.search(r'(?P<year1>[前]?\d+)年([~](?P<year2>[前]?\d+)年)?', l)
         if m:
             y1 = m.group('year1')
