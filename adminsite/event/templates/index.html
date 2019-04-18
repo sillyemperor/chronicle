@@ -49,7 +49,11 @@
                 start: new Date(d.year, d.month, d.day),
             };
             if(d.year2) {
-                i.end = new Date(d.year2, d.month2, d.day2);
+                var dt = new Date();
+                dt.setFullYear(d.year2);
+                if(d.month2) dt.setMonth(d.month2-1)
+                if(d.day2) dt.setDate(d.day2);
+                i.end = dt;
             }
             items.push(i);
         }
