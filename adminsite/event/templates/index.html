@@ -43,16 +43,20 @@
         var items = [];
         for(var i in data) {
             var d = data[i];
+            var dt = new Date();
+            dt.setFullYear(d.year);
+            if(d.month != null) dt.setMonth(d.month-1)
+            if(d.day != null) dt.setDate(d.day);
             var i = {
                 content:'<div class="text-truncate" style="width: 6rem;">'+d.abstract+'</div>',
                 title: d.abstract,
-                start: new Date(d.year, d.month, d.day),
+                start: dt,
             };
-            if(d.year2) {
+            if(d.year2 != null) {
                 var dt = new Date();
                 dt.setFullYear(d.year2);
-                if(d.month2) dt.setMonth(d.month2-1)
-                if(d.day2) dt.setDate(d.day2);
+                if(d.month2 != null) dt.setMonth(d.month2-1)
+                if(d.day2 != null) dt.setDate(d.day2);
                 i.end = dt;
             }
             items.push(i);
