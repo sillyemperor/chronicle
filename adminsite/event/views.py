@@ -10,6 +10,7 @@ from django.forms.models import model_to_dict
 from models import Event, encode_timestamp
 from serializers import EventSerializer
 import utils
+from datetime import datetime
 
 
 # 格式参考：http://timeline.knightlab.com/docs/json-format.html
@@ -102,11 +103,43 @@ def get_timeline_events(request, ids):
 
 
 @api_view(['GET'])
-def get_events(request, ids):
+def get_events_by_ids(request, ids):
     events = Event.objects.order_by('year').filter(public_status__exact=True, id__in=map(int, ids.split(',')))
     events = map(lambda x:x.as_dict(), events)
     print len(events)
     return Response(events)
+
+
+@api_view(["GET"])
+def search_events(request):
+    start = None
+    if 'start' in request.query_params:
+        start = int(request.query_params['start'])
+
+    end = None
+    if 'end' in request.query_params:
+        end = int(request.query_params['end'])
+
+    qw = None
+    if 'q' in request.query_params:
+        qw = request.query_params['q']
+    q = Event.objects.order_by('timestamp', 'level').all()
+    if start:
+        q = q.filter(timestamp__gte=start)
+    if end:
+        q = q.filter(timestamp__lte=end)
+    if qw:
+        q = q.filter(abstract__contains=qw)
+    page, size = 0, 100
+    if 'page' in request.query_params:
+        page = int(request.query_params['page'])
+    if 'page_size' in request.query_params:
+        size = int(request.query_params['page_size'])
+    size = min(100, size)
+    page = page * size
+    size = page + size
+    serializer = EventSerializer(q[page:size], many=True)
+    return Response(serializer.data)
 
 
 def parse_date(s):
