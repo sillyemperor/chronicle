@@ -38,6 +38,10 @@
   var timeline = new vis.Timeline(container, [], options);
 
   timeline.on('rangechanged', function(e) {
+    var y1 = new Date(e.start).getFullYear();
+    var y2 = new Date(e.end).getFullYear();
+    var ydm = y2-y1;
+
     Events.search(e.start, e.end, '', function(data, error){
 
         var items = [];
@@ -53,11 +57,15 @@
                 start: dt,
             };
             if(d.year2 != null) {
-                var dt = new Date();
-                dt.setFullYear(d.year2);
-                if(d.month2 != null) dt.setMonth(d.month2-1)
-                if(d.day2 != null) dt.setDate(d.day2);
-                i.end = dt;
+                var yd = d.year2-d.year;
+                var k = yd/ydm;
+                if(k>0.1) {
+                    var dt = new Date();
+                    dt.setFullYear(d.year2);
+                    if(d.month2 != null) dt.setMonth(d.month2-1)
+                    if(d.day2 != null) dt.setDate(d.day2);
+                    i.end = dt;
+                }
             }
             items.push(i);
         }
