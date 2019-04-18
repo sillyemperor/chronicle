@@ -117,6 +117,7 @@ def search_events(request):
     end = int(request.query_params['end'])
 
     q = Event.objects.order_by('timestamp', 'level').all()
+    q = q.filter(public_status=True)
     q = q.filter(Q(timestamp__gte=start)|Q(timestamp2__gte=start))
     q = q.filter(Q(timestamp__lte=end)|Q(timestamp2__lte=end))
 
