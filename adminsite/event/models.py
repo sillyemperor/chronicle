@@ -16,6 +16,8 @@ class Tag(models.Model):
 
 
 def encode_timestamp(year, month, day):
+    if year is None:
+        return None
     return (year < 0 and -1 or 1) * (abs(year) * 10000 + month * 100 + day)
 
 
@@ -30,8 +32,9 @@ class Event(models.Model):
     abstract = models.CharField(max_length=3000)
     timestamp = models.IntegerField(help_text='s*(year*10000+month*100+day),s is -1 means BC,20180103=2018 AD/01/13,-3390413=339 BC/04/13')
     year2 = models.IntegerField(help_text='year of end time if existed,is negative when BC,-238 means 238 BC', blank=True, null=True)
-    month2 = models.IntegerField(help_text='month of end time if existed,1~12', blank=True, null=True)
-    day2 = models.IntegerField(help_text='day of end time if existed,1~31', blank=True, null=True)
+    month2 = models.IntegerField(help_text='month of end time if existed,1~12', blank=True, default=0)
+    day2 = models.IntegerField(help_text='day of end time if existed,1~31', blank=True, default=0)
+    timestamp2 = models.IntegerField(help_text='s*(year2*10000+month2*100+day2),s is -1 means BC,20180103=2018 AD/01/13,-3390413=339 BC/04/13', null=True)
     online_url = models.URLField(help_text='Online resource html', max_length=3000, blank=True, null=True)
     public_status = models.BooleanField(help_text='Is public', default=False)
     CRUCIAL_EVENT = 1
@@ -61,6 +64,7 @@ class Event(models.Model):
 
     def prepare(self):
         self.timestamp = encode_timestamp(self.year, self.month, self.day)
+        self.timestamp2 = encode_timestamp(self.year2, self.month2, self.day2)
         return self
 
     def save(self, *args, **kwargs):

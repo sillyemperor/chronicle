@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 from models import Event, encode_timestamp
 from serializers import EventSerializer
@@ -112,24 +113,17 @@ def get_events_by_ids(request, ids):
 
 @api_view(["GET"])
 def search_events(request):
-    start = None
-    if 'start' in request.query_params:
-        start = int(request.query_params['start'])
+    start = int(request.query_params['start'])
+    end = int(request.query_params['end'])
 
-    end = None
-    if 'end' in request.query_params:
-        end = int(request.query_params['end'])
+    q = Event.objects.order_by('timestamp', 'level').all()
+    q = q.filter(Q(timestamp__gte=start)|Q(timestamp2__gte=start))
+    q = q.filter(Q(timestamp__lte=end)|Q(timestamp2__lte=end))
 
-    qw = None
     if 'q' in request.query_params:
         qw = request.query_params['q']
-    q = Event.objects.order_by('timestamp', 'level').all()
-    if start:
-        q = q.filter(timestamp__gte=start)
-    if end:
-        q = q.filter(timestamp__lte=end)
-    if qw:
         q = q.filter(abstract__contains=qw)
+
     page, size = 0, 100
     if 'page' in request.query_params:
         page = int(request.query_params['page'])
