@@ -8,10 +8,11 @@ from rest_framework.exceptions import APIException
 from django.forms.models import model_to_dict
 from django.db.models import Q
 
-from models import Event, encode_timestamp
-from serializers import EventSerializer
+from models import Event, encode_timestamp, Tag
+from serializers import EventSerializer, TagSerializer
 import utils
 from datetime import datetime
+import json
 
 
 # 格式参考：http://timeline.knightlab.com/docs/json-format.html
@@ -123,18 +124,31 @@ def search_events(request):
 
     if 'q' in request.query_params:
         qw = request.query_params['q']
-        q = q.filter(abstract__contains=qw)
+        if qw:
+            q = q.filter(abstract__contains=qw)
 
-    page, size = 0, 100
+    if 'tags' in request.query_params:
+        tags = json.loads(request.query_params['tags'])
+        if tags:
+            print tags
+            q = q.filter(tags__id__in=tags)
+
+    page, size = 0, 30
     if 'page' in request.query_params:
         page = int(request.query_params['page'])
     if 'page_size' in request.query_params:
         size = int(request.query_params['page_size'])
-    size = min(100, size)
+    size = min(30, size)
     page = page * size
     size = page + size
-    serializer = EventSerializer(q[page:size], many=True)
+    m = { i.id:i for i in q[page:size]}
+    serializer = EventSerializer(m.values(), many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET"])
+def list_tags(request):
+    return Response(TagSerializer(Tag.objects.all(), many=True).data)
 
 
 def parse_date(s):

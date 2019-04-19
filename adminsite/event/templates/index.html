@@ -12,11 +12,12 @@
     <script src="https://cdn.bootcss.com/fetch/2.0.0/fetch.min.js"></script>
     <script src="/static/event.js"></script>
     <script src="/static/vis/vis.min.js"></script>
+
     <title>Event Timeline</title>
 </head>
 <body>
 
-
+<div class="container-fluid">
 <div class="align-middle" id="visualization" ></div>
 
 <script type="text/javascript">
@@ -38,11 +39,15 @@
   var timeline = new vis.Timeline(container, [], options);
 
   timeline.on('rangechanged', function(e) {
+
     var y1 = new Date(e.start).getFullYear();
     var y2 = new Date(e.end).getFullYear();
     var ydm = y2-y1;
 
-    Events.search(e.start, e.end, '', function(data, error){
+    var tags = get_tags();
+    console.log(tags);
+
+    Events.search(e.start, e.end, '', tags, function(data, error){
 
         var items = [];
         for(var i in data) {
@@ -74,7 +79,42 @@
     });
   });
 </script>
+</div>
 
+<!--控制面板-->
+<div class="container-fluid">
+
+    <div class="container" id="filter-tag">
+
+    <script type="text/javascript">
+        function get_tags() {
+            var tags = [];
+            var ds = document.getElementsByName('filter-tag');
+            for(var i in ds) {
+                var d = ds[i];
+                if(d.checked) {
+                    var id = parseInt(d.id.substr(11));
+                    tags.push(id);
+                }
+            }
+            return '['+tags.join(',')+']'
+        }
+        Events.list_tags(function(data, error){
+            var s = "";
+            for(var i in data) {
+                var d = data[i];
+
+                s += '<div class="form-check form-check-inline"><label class="form-check-label" for="filter-tag-'+d.id+'">'+d.name+'</label>'+
+                '<input class="form-check-input" name="filter-tag" type="checkbox" id="filter-tag-'+d.id+'"></div>'
+
+            }
+            var d = document.getElementById('filter-tag');
+            d.innerHTML = s;
+        });
+    </script>
+    </div>
+
+</div>
 
 <div class="container">
     <div class="fixed-bottom">

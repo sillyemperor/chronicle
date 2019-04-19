@@ -1,3 +1,13 @@
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 var Events = (function(){
 
 	function http(url, method, isjson, data, callback, nologin) {
@@ -29,8 +39,11 @@ var Events = (function(){
 	}
 
 	return {
-	    search: function(start, end, q, cb) {
-	        http('/event?q='+q+'&start='+convert_time(start)+'&end='+convert_time(end), "GET", true, null, cb);
+	    search: function(start, end, q, tags, cb) {
+	        http('/event?q='+q+'&start='+convert_time(start)+'&end='+convert_time(end)+'&tags='+tags, "GET", true, null, cb);
+	    },
+	    list_tags: function(cb) {
+	        http('/tag', "GET", true, null, cb);
 	    },
 	};
 

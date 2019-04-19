@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^event/timeline/event/search$', views.get_timeline_search_events),
     url(r'^event/index/search$', views.search_event_index),
     url(r'^event$', views.search_events),
+    url(r'^tag$', views.list_tags),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
