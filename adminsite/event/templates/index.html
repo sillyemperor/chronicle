@@ -38,16 +38,24 @@
   // Create a Timeline
   var timeline = new vis.Timeline(container, [], options);
 
-  timeline.on('rangechanged', function(e) {
+  var startTime, endTime;
 
-    var y1 = new Date(e.start).getFullYear();
-    var y2 = new Date(e.end).getFullYear();
+  timeline.on('rangechanged', function(e) {
+    startTime = e.start;
+    endTime = e.end;
+    refresh();
+  });
+
+  function refresh() {
+
+    var y1 = new Date(startTime).getFullYear();
+    var y2 = new Date(endTime).getFullYear();
     var ydm = y2-y1;
 
     var tags = get_tags();
     console.log(tags);
 
-    Events.search(e.start, e.end, '', tags, function(data, error){
+    Events.search(startTime, endTime, '', tags, function(data, error){
 
         var items = [];
         for(var i in data) {
@@ -77,7 +85,7 @@
         console.log(items);
         timeline.setItems(new vis.DataSet(items));
     });
-  });
+  }
 </script>
 </div>
 
@@ -105,7 +113,7 @@
                 var d = data[i];
 
                 s += '<div class="form-check form-check-inline"><label class="form-check-label" for="filter-tag-'+d.id+'">'+d.name+'</label>'+
-                '<input class="form-check-input" name="filter-tag" type="checkbox" id="filter-tag-'+d.id+'"></div>'
+                '<input onchange="refresh();" class="form-check-input" name="filter-tag" type="checkbox" id="filter-tag-'+d.id+'"></div>'
 
             }
             var d = document.getElementById('filter-tag');
