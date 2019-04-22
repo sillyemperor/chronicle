@@ -64,8 +64,12 @@
             dt.setFullYear(d.year);
             if(d.month != null) dt.setMonth(d.month-1)
             if(d.day != null) dt.setDate(d.day);
+            var url = i.online_url;
+            if(!url) {
+                url = 'https://baike.baidu.com/item/'+d.abstract;
+            }
             var i = {
-                content:'<div class="text-truncate" style="width: 6rem;">'+d.abstract+'</div>',
+                content:'<div class="text-truncate" style="width: 6rem;"><a target="_blank" href="'+url+'"><img style="width:24px;" src="/static/hyperlink.png"></a>'+d.abstract+'</div>',
                 title: d.abstract,
                 start: dt,
             };
