@@ -68,8 +68,15 @@
             if(!url) {
                 url = 'https://baike.baidu.com/item/'+d.abstract;
             }
+            var loc = '';
+            if(d.location) {
+                loc = '<a target="_blank" href="//uri.amap.com/marker?position='+d.location.join(',')+'"><img style="width:16px;" src="/static/pin.png"></a>';
+            }
             var i = {
-                content:'<div class="text-truncate" style="width: 6rem;"><a target="_blank" href="'+url+'"><img style="width:24px;" src="/static/hyperlink.png"></a>'+d.abstract+'</div>',
+                content:'<div class="text-truncate" style="width: 6rem;">'
+                +'<a target="_blank" href="'+url+'"><img style="width:24px;" src="/static/hyperlink.png"></a>'
+                +loc
+                +d.abstract+'</div>',
                 title: d.abstract,
                 start: dt,
             };
