@@ -1,4 +1,4 @@
-Django==1.11.7
+Django==1.11.29
 Fabric==1.14.0
 djangorestframework>=3
 markdown>=2.1.0
